@@ -59,6 +59,9 @@ for latest in "${latests[@]}"; do
                 chmod 755 "$dir/$name"
             done
 
+            # Copy the configuration
+            cp -r "conf" "$dir"
+
             travisEnv='\n    - VERSION='"$version"' VARIANT='"$variant$travisEnv"
 
             if [[ $1 == 'build' ]]; then
