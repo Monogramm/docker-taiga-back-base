@@ -46,10 +46,8 @@ RUN set -ex; \
     apk add --no-cache \
         ca-certificates \
         gettext \
-        locales \
         tar \
     ; \
-    locale-gen en_US.UTF-8 && dpkg-reconfigure locales; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
 	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
@@ -77,11 +75,12 @@ RUN set -ex; \
 #    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
 #    echo "LANGUAGE=en" >> /etc/default/locale;
 
-ENV LANG=en_US.UTF-8 \
-    LC_TYPE=en_US.UTF-8
+#ENV LANG=en_US.UTF-8 \
+#    LC_TYPE=en_US.UTF-8
+#RUN set -ex; \
+#    locale-gen en_US.UTF-8 && locale -a
 
 RUN set -ex; \
-    locale-gen en_US.UTF-8 && locale -a; \
     python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/entrypoint.sh"]
