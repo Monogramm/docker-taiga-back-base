@@ -46,6 +46,7 @@ RUN set -ex; \
     apk add --no-cache \
         ca-certificates \
         gettext \
+        git \
         tar \
     ; \
     chmod 755 /entrypoint.sh /checkdb.py; \
