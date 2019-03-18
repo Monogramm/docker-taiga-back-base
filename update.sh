@@ -6,7 +6,7 @@ declare -A base=(
 )
 
 declare -A python_versions=(
-	[3]='3.6'
+	[3]='3.5'
 	[4]='3.7'
 )
 

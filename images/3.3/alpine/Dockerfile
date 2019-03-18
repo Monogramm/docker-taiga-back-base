@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.5-alpine
 # https://github.com/madmath03/docker-taiga/tree/alpine
 
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
