@@ -59,9 +59,11 @@ RUN set -ex; \
         ca-certificates \
         gettext \
         git \
+        libgcrypt-dev \
         libxml2-dev \
         libxslt-dev \
         postgresql-libs \
+        python-dev \
         tar \
     ; \
 	apk add --no-cache --virtual .build-deps \
