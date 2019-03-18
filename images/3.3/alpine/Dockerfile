@@ -1,4 +1,5 @@
-FROM python:alpine
+FROM python:3.6-alpine
+# https://github.com/madmath03/docker-taiga/tree/alpine
 
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
@@ -85,9 +86,6 @@ RUN set -ex; \
 	rm -rf /tmp/taiga-back; \
 	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
     pip install --no-cache-dir -r requirements.txt
-
-RUN set -ex; \
-    python manage.py collectstatic --noinput
 
 # Backend healthcheck
 HEALTHCHECK CMD curl --fail http://127.0.0.1:8000/api/v1/ || exit 1
