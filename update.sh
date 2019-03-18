@@ -5,6 +5,11 @@ declare -A base=(
 	[alpine]='alpine'
 )
 
+declare -A python_versions=(
+	[3]='3.6'
+	[4]='3.7'
+)
+
 variants=(
 	alpine
 )
@@ -30,6 +35,7 @@ echo "update docker images"
 travisEnv=
 for latest in "${latests[@]}"; do
 	version=$(echo "$latest" | cut -d. -f1-2)
+	major=$(echo "$latest" | cut -d. -f1-1)
 
 	# Only add versions >= "$min_version"
 	if version_greater_or_equal "$version" "$min_version"; then
@@ -49,6 +55,7 @@ for latest in "${latests[@]}"; do
 
             # Replace the variables.
             sed -ri -e '
+                s/%%PYTHON_VERSION%%/'"${python_versions[$major]}"'/g;
                 s/%%VARIANT%%/'"$variant"'/g;
                 s/%%VERSION%%/'"$latest"'/g;
             ' "$dir/Dockerfile"
@@ -58,6 +65,9 @@ for latest in "${latests[@]}"; do
                 cp "docker-$name" "$dir/$name"
                 chmod 755 "$dir/$name"
             done
+
+            # Copy the configuration
+            cp -r "conf" "$dir"
 
             travisEnv='\n    - VERSION='"$version"' VARIANT='"$variant$travisEnv"
 

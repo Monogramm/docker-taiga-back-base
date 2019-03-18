@@ -34,8 +34,9 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
 fi
 
 # In case of frontend upgrade, locales and statics should be regenerated
-python manage.py compilemessages
-python manage.py collectstatic --noinput
+echo "Compiling messages and collecting static"
+python manage.py compilemessages > /dev/null
+python manage.py collectstatic --noinput > /dev/null
 
-# Start gunicorn server
+echo "Start gunicorn server"
 exec "$@"

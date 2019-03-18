@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3.7-alpine
 
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
@@ -37,19 +37,45 @@ COPY conf/taiga/local.py /taiga/local.py
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
+WORKDIR /usr/src/taiga-back
+
+# specify LANG to ensure python installs locals properly
+# fixes benhutchins/docker-taiga-example#4
+# ref benhutchins/docker-taiga#15
+ENV LANG=C \
+    LANG=en_US.UTF-8 \
+    LC_TYPE=en_US.UTF-8
+
 # Install the packages we need
 # Set locale
+#    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
+#    echo "LANGUAGE=en" >> /etc/default/locale; \
 # Assure main scripts are executable
 # Install Taiga from tag archive
 # Setup symbolic links for configuration files
 RUN set -ex; \
-    apk add --no-cache \
+    apk add --update --no-cache \
         ca-certificates \
+        curl \
         gettext \
-        locales \
+		gcc \
+        git \
+        libffi-dev \
+        libgcrypt-dev \
+        jpeg-dev \
+        libxml2-dev \
+        libxslt-dev \
+        musl-dev \
+        openssl-dev \
+        postgresql-dev \
+        postgresql-libs \
         tar \
+        zeromq-dev \
+        zlib-dev \
     ; \
-    locale-gen en_US.UTF-8 && dpkg-reconfigure locales; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
 	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
@@ -57,32 +83,12 @@ RUN set -ex; \
 	mkdir -p /usr/src/taiga-back; \
 	cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
 	rm -rf /tmp/taiga-back; \
-	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py
-
-
-WORKDIR /usr/src/taiga-back
-
-# specify LANG to ensure python installs locals properly
-# fixes benhutchins/docker-taiga-example#4
-# ref benhutchins/docker-taiga#15
-ENV LANG=C
-
-RUN set -ex; \
+	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
     pip install --no-cache-dir -r requirements.txt
 
-#RUN set -ex; \
-#    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
-#    echo "LANGUAGE=en" >> /etc/default/locale;
-
-ENV LANG=en_US.UTF-8 \
-    LC_TYPE=en_US.UTF-8
-
-RUN set -ex; \
-    locale-gen en_US.UTF-8 && locale -a; \
-    python manage.py collectstatic --noinput
+# Backend healthcheck
+HEALTHCHECK CMD curl --fail http://127.0.0.1:8000/api/v1/ || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "-w 3", "-t 60", "--pythonpath=.", "-b 127.0.0.1:8000", "taiga.wsgi"]
