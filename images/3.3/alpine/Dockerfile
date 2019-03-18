@@ -37,12 +37,24 @@ COPY conf/taiga/local.py /taiga/local.py
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
+WORKDIR /usr/src/taiga-back
+
+# specify LANG to ensure python installs locals properly
+# fixes benhutchins/docker-taiga-example#4
+# ref benhutchins/docker-taiga#15
+ENV LANG=C
+
 # Install the packages we need
 # Set locale
 # Assure main scripts are executable
 # Install Taiga from tag archive
 # Setup symbolic links for configuration files
 RUN set -ex; \
+    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
+    echo "LANGUAGE=en" >> /etc/default/locale; \
     apk add --no-cache \
         ca-certificates \
         gettext \
@@ -51,9 +63,10 @@ RUN set -ex; \
         tar \
     ; \
 	apk add --no-cache --virtual .build-deps \
-		postgresql-dev \
+		gcc \
+        musl-dev \
+        postgresql-dev \
 	; \
-	apk --purge del .build-deps; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
 	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
@@ -61,25 +74,9 @@ RUN set -ex; \
 	mkdir -p /usr/src/taiga-back; \
 	cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
 	rm -rf /tmp/taiga-back; \
-	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py
-
-
-WORKDIR /usr/src/taiga-back
-
-# specify LANG to ensure python installs locals properly
-# fixes benhutchins/docker-taiga-example#4
-# ref benhutchins/docker-taiga#15
-ENV LANG=C
-
-RUN set -ex; \
-    pip install --no-cache-dir -r requirements.txt
-
-RUN set -ex; \
-    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
-    echo "LANGUAGE=en" >> /etc/default/locale;
+	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
+    pip install --no-cache-dir -r requirements.txt; \
+	apk --purge del .build-deps
 
 #ENV LANG=en_US.UTF-8 \
 #    LC_TYPE=en_US.UTF-8
