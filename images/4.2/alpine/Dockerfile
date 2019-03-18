@@ -64,12 +64,17 @@ RUN set -ex; \
 		gcc \
         git \
         libffi-dev \
+        libgcrypt-dev \
         jpeg-dev \
         libxml2-dev \
         libxslt-dev \
         musl-dev \
+        openssl-dev \
+        postgresql-dev \
         postgresql-libs \
         tar \
+        zeromq-dev \
+        zlib-dev \
     ; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
