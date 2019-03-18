@@ -42,7 +42,9 @@ WORKDIR /usr/src/taiga-back
 # specify LANG to ensure python installs locals properly
 # fixes benhutchins/docker-taiga-example#4
 # ref benhutchins/docker-taiga#15
-ENV LANG=C
+ENV LANG=C \
+    LANG=en_US.UTF-8 \
+    LC_TYPE=en_US.UTF-8
 
 # Install the packages we need
 # Set locale
@@ -55,8 +57,9 @@ ENV LANG=C
 # Install Taiga from tag archive
 # Setup symbolic links for configuration files
 RUN set -ex; \
-    apk add --no-cache \
+    apk add --update --no-cache \
         ca-certificates \
+        curl \
         gettext \
         git \
         libffi-dev \
@@ -87,11 +90,6 @@ RUN set -ex; \
 	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
     pip install --no-cache-dir -r requirements.txt; \
 	apk --purge del .build-deps
-
-#ENV LANG=en_US.UTF-8 \
-#    LC_TYPE=en_US.UTF-8
-#RUN set -ex; \
-#    locale-gen en_US.UTF-8 && locale -a
 
 RUN set -ex; \
     python manage.py collectstatic --noinput
