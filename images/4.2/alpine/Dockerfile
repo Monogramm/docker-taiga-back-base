@@ -59,19 +59,23 @@ RUN set -ex; \
         ca-certificates \
         gettext \
         git \
+        libffi-dev \
         libgcrypt-dev \
+        libjpeg-turbo-dev \
         libxml2-dev \
         libxslt-dev \
         postgresql-libs \
-        python-dev \
         tar \
+        zeromq-dev \
     ; \
 	apk add --no-cache --virtual .build-deps \
-        libffi-dev \
 		gcc \
+        linux-headers \
+        libjpeg-turbo-dev \
         musl-dev \
         openssl-dev \
         postgresql-dev \
+        zlib-dev \
 	; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
