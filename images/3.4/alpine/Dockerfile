@@ -59,7 +59,8 @@ RUN set -ex; \
         ca-certificates \
         gettext \
         git \
-        libxml2 \
+        libxml2-dev \
+        libxslt-dev \
         postgresql-libs \
         tar \
     ; \
