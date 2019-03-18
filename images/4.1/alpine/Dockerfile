@@ -63,8 +63,10 @@ RUN set -ex; \
         tar \
     ; \
 	apk add --no-cache --virtual .build-deps \
+        libffi-dev \
 		gcc \
         musl-dev \
+        openssl-dev \
         postgresql-dev \
 	; \
     chmod 755 /entrypoint.sh /checkdb.py; \
