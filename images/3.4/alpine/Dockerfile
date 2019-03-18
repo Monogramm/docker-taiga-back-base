@@ -46,15 +46,15 @@ ENV LANG=C
 
 # Install the packages we need
 # Set locale
+#    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
+#    echo "LANGUAGE=en" >> /etc/default/locale; \
 # Assure main scripts are executable
 # Install Taiga from tag archive
 # Setup symbolic links for configuration files
 RUN set -ex; \
-    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
-    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
-    echo "LANGUAGE=en" >> /etc/default/locale; \
     apk add --no-cache \
         ca-certificates \
         gettext \
