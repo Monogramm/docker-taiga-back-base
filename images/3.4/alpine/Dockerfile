@@ -1,5 +1,4 @@
-FROM python:3.5-alpine
-# https://github.com/madmath03/docker-taiga/tree/alpine
+FROM python:3.6-alpine
 
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
@@ -85,6 +84,7 @@ RUN set -ex; \
 	cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
 	rm -rf /tmp/taiga-back; \
 	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
     pip install --no-cache-dir -r requirements.txt
 
 # Backend healthcheck
