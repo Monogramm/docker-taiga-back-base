@@ -61,25 +61,16 @@ RUN set -ex; \
         ca-certificates \
         curl \
         gettext \
+		gcc \
         git \
         libffi-dev \
-        libgcrypt-dev \
-        libjpeg-turbo-dev \
+        jpeg-dev \
         libxml2-dev \
         libxslt-dev \
+        musl-dev \
         postgresql-libs \
         tar \
-        zeromq-dev \
     ; \
-	apk add --no-cache --virtual .build-deps \
-		gcc \
-        linux-headers \
-        libjpeg-turbo-dev \
-        musl-dev \
-        openssl-dev \
-        postgresql-dev \
-        zlib-dev \
-	; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
 	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
@@ -88,8 +79,7 @@ RUN set -ex; \
 	cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
 	rm -rf /tmp/taiga-back; \
 	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
-    pip install --no-cache-dir -r requirements.txt; \
-	apk --purge del .build-deps
+    pip install --no-cache-dir -r requirements.txt
 
 RUN set -ex; \
     python manage.py collectstatic --noinput
