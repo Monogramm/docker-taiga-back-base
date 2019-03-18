@@ -92,5 +92,8 @@ RUN set -ex; \
 RUN set -ex; \
     python manage.py collectstatic --noinput
 
+# Backend healthcheck
+HEALTHCHECK CMD curl --fail http://127.0.0.1:8000/api/v1/ || exit 1
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "-w 3", "-t 60", "--pythonpath=.", "-b 127.0.0.1:8000", "taiga.wsgi"]
