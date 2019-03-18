@@ -47,8 +47,13 @@ RUN set -ex; \
         ca-certificates \
         gettext \
         git \
+        postgresql-libs \
         tar \
     ; \
+	apk add --no-cache --virtual .build-deps \
+		postgresql-dev \
+	; \
+	apk --purge del .build-deps; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
 	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
@@ -69,12 +74,12 @@ ENV LANG=C
 RUN set -ex; \
     pip install --no-cache-dir -r requirements.txt
 
-#RUN set -ex; \
-#    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
-#    echo "LANGUAGE=en" >> /etc/default/locale;
+RUN set -ex; \
+    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
+    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
+    echo "LANGUAGE=en" >> /etc/default/locale;
 
 #ENV LANG=en_US.UTF-8 \
 #    LC_TYPE=en_US.UTF-8
