@@ -50,9 +50,9 @@ EXPOSE 8000
 VOLUME /taiga /usr/src/taiga-back/media
 
 COPY checkdb.py entrypoint.sh /
-COPY settings.py /usr/src/taiga-back/settings/docker.py
-COPY conf/locale.gen /etc/locale.gen
-COPY conf/taiga/local.py /taiga/local.py
+COPY docker.py /usr/src/taiga-back/settings/
+COPY conf/locale.gen /etc/
+COPY conf/taiga/local.py /taiga/
 
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz

@@ -35,7 +35,7 @@ You can also build all images by running `update.sh build`.
 
 The Taiga image supports auto configuration via environment variables. You can preconfigure nearly everything that is available in `local.py`.
 
-See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/settings/local.py.example) and [docker-settings.py](https://github.com/Monogramm/docker-taiga-back-base/blob/master/docker-settings.py) for more details on configuration.
+See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/settings/local.py.example) and [docker-settings.py](https://github.com/Monogramm/docker-taiga-back-base/blob/master/docker-docker.py) for more details on configuration.
 
 
 ### TAIGA_DB_NAME
