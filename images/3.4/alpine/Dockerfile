@@ -2,19 +2,13 @@ FROM python:3.6-alpine
 
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
-# Taiga database, front, events, email and security properties
+# Taiga database, front, back, events, email and security properties
 ENV TAIGA_VERSION=3.4.5 \
-    TAIGA_DB_NAME='' \
-    TAIGA_DB_HOST='' \
-    TAIGA_DB_USER='' \
+    TAIGA_DB_NAME=taiga \
+    TAIGA_DB_HOST=taigadb \
+    TAIGA_DB_USER=taiga \
     TAIGA_DB_PASSWORD='' \
     TAIGA_HOSTNAME=localhost \
-	TAIGA_SSL=False \
-    TAIGA_SSL_BY_REVERSE_PROXY=False \
-    RABBIT_HOST=rabbit \
-    RABBIT_PORT='' \
-    REDIS_HOST=redis \
-    REDIS_PORT='' \
     TAIGA_ENABLE_EMAIL=False \
     TAIGA_EMAIL_FROM='' \
     TAIGA_EMAIL_USE_TLS=False \
@@ -22,8 +16,34 @@ ENV TAIGA_VERSION=3.4.5 \
     TAIGA_EMAIL_PORT='' \
     TAIGA_EMAIL_USER='' \
     TAIGA_EMAIL_PASS='' \
+    TAIGA_ADMIN_PASSWORD=123123 \
+	TAIGA_SSL=False \
+    TAIGA_SSL_BY_REVERSE_PROXY=False \
     TAIGA_SECRET_KEY="!!!REPLACE-ME-j1598u1J^U*(y251u98u51u5981urf98u2o5uvoiiuzhlit3)!!!" \
-    TAIGA_ADMIN_PASSWORD=
+    TAIGA_DEBUG=False \
+    TAIGA_TEMPLATE_DEBUG=False \
+    TAIGA_PUBLIC_REGISTER_ENABLED=False \
+    TAIGA_SITEMAP_ENABLED=False \
+    TAIGA_FEEDBACK_ENABLED=False \
+    TAIGA_FEEDBACK_EMAIL='' \
+    TAIGA_STATS_ENABLED=False \
+    TAIGA_IMPORTER_GITHUB_ENABLED=False \
+    TAIGA_IMPORTER_GITHUB_CLIENT_ID='' \
+    TAIGA_IMPORTER_GITHUB_CLIENT_SECRET='' \
+    TAIGA_IMPORTER_TRELLO_ENABLED=False \
+    TAIGA_IMPORTER_TRELLO_API_KEY='' \
+    TAIGA_IMPORTER_TRELLO_API_SECRET='' \
+    TAIGA_IMPORTER_JIRA_ENABLED=False \
+    TAIGA_IMPORTER_JIRA_CONSUMER_KEY='' \
+    TAIGA_IMPORTER_JIRA_CERT='' \
+    TAIGA_IMPORTER_JIRA_PUB_CERT='' \
+    TAIGA_IMPORTER_ASANA_ENABLED=False \
+    TAIGA_IMPORTER_ASANA_APP_ID='' \
+    TAIGA_IMPORTER_ASANA_APP_SECRET='' \
+    RABBIT_HOST='' \
+    RABBIT_PORT=5672 \
+    REDIS_HOST='' \
+    REDIS_PORT=6379
 
 EXPOSE 8000
 
