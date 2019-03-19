@@ -17,7 +17,7 @@ ENV TAIGA_VERSION=%%VERSION%% \
     TAIGA_EMAIL_USER='' \
     TAIGA_EMAIL_PASS='' \
     TAIGA_ADMIN_PASSWORD=123123 \
-	TAIGA_SSL=False \
+    TAIGA_SSL=False \
     TAIGA_SSL_BY_REVERSE_PROXY=False \
     TAIGA_SECRET_KEY="!!!REPLACE-ME-j1598u1J^U*(y251u98u51u5981urf98u2o5uvoiiuzhlit3)!!!" \
     TAIGA_DEBUG=False \
@@ -50,9 +50,9 @@ EXPOSE 8000
 VOLUME /taiga /usr/src/taiga-back/media
 
 COPY checkdb.py entrypoint.sh /
-COPY settings.py /usr/src/taiga-back/settings/docker.py
-COPY conf/locale.gen /etc/locale.gen
-COPY conf/taiga/local.py /taiga/local.py
+COPY docker.py /usr/src/taiga-back/settings/
+COPY conf/locale.gen /etc/
+COPY conf/taiga/local.py /taiga/
 
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
@@ -81,7 +81,7 @@ RUN set -ex; \
         ca-certificates \
         curl \
         gettext \
-		gcc \
+        gcc \
         git \
         libffi-dev \
         libgcrypt-dev \
@@ -98,12 +98,12 @@ RUN set -ex; \
     ; \
     chmod 755 /entrypoint.sh /checkdb.py; \
     mkdir -p /tmp/taiga-back; \
-	tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
-	rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \
-	mkdir -p /usr/src/taiga-back; \
-	cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
-	rm -rf /tmp/taiga-back; \
-	ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
+    tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
+    rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \
+    mkdir -p /usr/src/taiga-back; \
+    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
+    rm -rf /tmp/taiga-back; \
+    ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
     pip install --no-cache-dir -r requirements.txt
 
