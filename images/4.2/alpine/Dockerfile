@@ -3,7 +3,7 @@ FROM python:3.7-alpine
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
 # Taiga database, front, back, events, email and security properties
-ENV TAIGA_VERSION=4.2.0 \
+ENV TAIGA_VERSION=4.2.1 \
     TAIGA_DB_NAME=taiga \
     TAIGA_DB_HOST=taigadb \
     TAIGA_DB_USER=taiga \
@@ -40,6 +40,8 @@ ENV TAIGA_VERSION=4.2.0 \
     TAIGA_IMPORTER_ASANA_ENABLED=False \
     TAIGA_IMPORTER_ASANA_APP_ID='' \
     TAIGA_IMPORTER_ASANA_APP_SECRET='' \
+    RABBIT_USER=guest \
+    RABBIT_PASSWORD=guest \
     RABBIT_HOST='' \
     RABBIT_PORT=5672 \
     REDIS_HOST='' \
