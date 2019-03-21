@@ -78,7 +78,7 @@ TAIGA_DB_USER=taigadb
 
 ### TAIGA_DB_PASSWORD
 
-*Default value*: `''`
+*Default value*:
 
 Your database user passsword (REQUIRED)
 
@@ -113,7 +113,7 @@ TAIGA_ENABLE_EMAIL=True
 
 ### TAIGA_EMAIL_FROM
 
-*Default value*: ``
+*Default value*:
 
 The default 'From' email
 
@@ -136,7 +136,7 @@ TAIGA_EMAIL_USE_TLS=True
 
 ### TAIGA_EMAIL_HOST
 
-*Default value*: `''`
+*Default value*:
 
 The email server hostname
 
@@ -148,7 +148,7 @@ TAIGA_EMAIL_HOST=smtp.gmail.com
 
 ### TAIGA_EMAIL_PORT
 
-*Default value*: `''`
+*Default value*:
 
 The email server port
 
@@ -161,7 +161,7 @@ TAIGA_EMAIL_PORT=587
 
 ### TAIGA_EMAIL_USER
 
-*Default value*: `''`
+*Default value*:
 
 The email server user
 
@@ -172,7 +172,7 @@ TAIGA_EMAIL_USER=taiga@company.com
 
 ### TAIGA_EMAIL_PASS
 
-*Default value*: `''`
+*Default value*:
 
 The email server user passsword
 
@@ -249,7 +249,7 @@ Examples:
 ```
 TAIGA_TEMPLATE_DEBUG=false
 TAIGA_TEMPLATE_DEBUG=true
-TAIGA_TEMPLATE_DEBUG=''
+TAIGA_TEMPLATE_DEBUG=
 ```
 
 ### TAIGA_PUBLIC_REGISTER_ENABLED

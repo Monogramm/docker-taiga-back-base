@@ -5,7 +5,7 @@
 : ${TAIGA_SLEEP:=0}
 sleep $TAIGA_SLEEP
 
-# Setup database automatically if needed
+# Setup and check database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   echo "Running database check"
   python /checkdb.py
@@ -29,11 +29,13 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   fi
 
   # Database migration check should be done in all startup in case of backend upgrade
-  echo "Generate database migrations..."
-  python manage.py makemigrations
-
   echo "Execute database migrations..."
   python manage.py migrate --noinput
+
+  # TODO Generate migrations and execute if needed
+  #echo "Generate database migrations..."
+  #python manage.py makemigrations
+  #python manage.py migrate --noinput
 
 fi
 
