@@ -3,7 +3,7 @@ FROM python:3.7-alpine
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
 # Taiga database, front, back, events, email and security properties
-ENV TAIGA_VERSION=4.2.1 \
+ENV TAIGA_VERSION=4.2.2 \
     TAIGA_DB_NAME=taiga \
     TAIGA_DB_HOST=taigadb \
     TAIGA_DB_USER=taiga \
@@ -110,4 +110,4 @@ RUN set -ex; \
     pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "--workers 4", "--timeout 60 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]
+CMD ["gunicorn", "--workers 4", "--timeout 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]

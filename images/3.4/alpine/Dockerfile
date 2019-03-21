@@ -110,4 +110,4 @@ RUN set -ex; \
     pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "--workers 4", "--timeout 60 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]
+CMD ["gunicorn", "--workers 4", "--timeout 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]
