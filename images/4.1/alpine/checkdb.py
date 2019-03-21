@@ -5,12 +5,18 @@ DB_HOST = os.getenv('TAIGA_DB_HOST')
 DB_USER = os.getenv('TAIGA_DB_USER')
 DB_PASS = os.getenv('TAIGA_DB_PASSWORD')
 
+safe_conn_string = (
+    "dbname='" + DB_NAME +
+    "' user='" + DB_USER +
+    "' host='" + DB_HOST +
+    "' password='******'")
+
 conn_string = (
     "dbname='" + DB_NAME +
     "' user='" + DB_USER +
     "' host='" + DB_HOST +
     "' password='" + DB_PASS + "'")
-print("Connecting to database:\n" + conn_string)
+print("Connecting to database:\n" + safe_conn_string)
 conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
 
