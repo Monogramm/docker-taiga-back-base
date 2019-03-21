@@ -47,7 +47,7 @@ ENV TAIGA_VERSION=4.2.1 \
     REDIS_HOST='' \
     REDIS_PORT=6379
 
-EXPOSE 8000
+EXPOSE 8001
 
 VOLUME /taiga /usr/src/taiga-back/media
 
@@ -110,4 +110,4 @@ RUN set -ex; \
     pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "-w 3", "-t 60", "--pythonpath=.", "-b 127.0.0.1:8000", "taiga.wsgi"]
+CMD ["gunicorn", "--workers 4", "--timeout 60 60", "--pythonpath=.", "-b 127.0.0.1:8001", "taiga.wsgi"]
