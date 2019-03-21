@@ -179,7 +179,7 @@ if os.getenv('TAIGA_IMPORTER_ASANA_ENABLED').lower() == 'true':
 if os.getenv('RABBIT_HOST') is not None and os.getenv('REDIS_HOST') is not None:
     from .celery import *
 
-    BROKER_URL = 'amqp://guest:guest@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT')
+    BROKER_URL = 'amqp://' + os.getenv('RABBIT_USER') + ':' + os.getenv('RABBIT_PASSWORD') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT')
     CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT') + '/0'
     # Set to True to enable celery and work in async mode or False
     # to disable it and work in sync mode. You can find the celery
@@ -187,5 +187,5 @@ if os.getenv('RABBIT_HOST') is not None and os.getenv('REDIS_HOST') is not None:
     CELERY_ENABLED = True
 
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
-    EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://guest:guest@" + os.getenv('RABBIT_HOST') + ":" + os.getenv('RABBIT_PORT') + "//"}
+    EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://" + os.getenv('RABBIT_USER') + ":" + os.getenv('RABBIT_PASSWORD') + "@" + os.getenv('RABBIT_HOST') + ":" + os.getenv('RABBIT_PORT') + "//"}
 
