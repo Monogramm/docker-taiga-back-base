@@ -7,11 +7,13 @@ from .common import *
 #########################################
 
 if os.getenv('TAIGA_DEBUG').lower() == 'true':
+    print("Taiga debug enabled", file=sys.stderr)
     DEBUG = True
 else:
     DEBUG = False
 
 if os.getenv('TAIGA_TEMPLATE_DEBUG').lower() == 'true':
+    print("Taiga template debug enabled", file=sys.stderr)
     TEMPLATE_DEBUG = True
 else:
     TEMPLATE_DEBUG = False
@@ -40,6 +42,7 @@ STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 #########################################
 
 if os.getenv('TAIGA_ENABLE_EMAIL').lower() == 'true':
+    print("Enabling Taiga emails...", file=sys.stderr)
     DEFAULT_FROM_EMAIL = os.getenv('TAIGA_EMAIL_FROM')
     CHANGE_NOTIFICATIONS_MIN_INTERVAL = 300 # in seconds
 
@@ -61,6 +64,7 @@ if os.getenv('TAIGA_ENABLE_EMAIL').lower() == 'true':
 #########################################
 
 if os.getenv('TAIGA_SSL').lower() == 'true' or os.getenv('TAIGA_SSL_BY_REVERSE_PROXY').lower() == 'true':
+    print("Enabling Taiga SSL...", file=sys.stderr)
     SITES['api']['scheme'] = 'https'
     SITES['front']['scheme'] = 'https'
 
@@ -75,6 +79,7 @@ SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 #########################################
 
 if os.getenv('TAIGA_PUBLIC_REGISTER_ENABLED').lower() == 'true':
+    print("Taiga registration enabled", file=sys.stderr)
     PUBLIC_REGISTER_ENABLED = True
 else:
     PUBLIC_REGISTER_ENABLED = False
@@ -96,6 +101,7 @@ else:
 
 # If is True /front/sitemap.xml show a valid sitemap of taiga-front client
 if os.getenv('TAIGA_SITEMAP_ENABLED').lower() == 'true':
+    print("Taiga sitemap enabled", file=sys.stderr)
     FRONT_SITEMAP_ENABLED = True
     FRONT_SITEMAP_CACHE_TIMEOUT = 24*60*60  # In second
 else:
@@ -108,6 +114,7 @@ else:
 
 # Note: See config in taiga-front too
 if os.getenv('TAIGA_FEEDBACK_ENABLED').lower() == 'true':
+    print("Taiga feedback enabled", file=sys.stderr)
     FEEDBACK_ENABLED = True
     FEEDBACK_EMAIL = os.getenv('TAIGA_FEEDBACK_EMAIL')
 else:
@@ -119,6 +126,7 @@ else:
 #########################################
 
 if os.getenv('TAIGA_STATS_ENABLED').lower() == 'true':
+    print("Taiga statistics enabled", file=sys.stderr)
     STATS_ENABLED = True
     FRONT_SITEMAP_CACHE_TIMEOUT = 60*60  # In second
 else:
@@ -132,6 +140,7 @@ else:
 # Configuration for the GitHub importer
 # Remember to enable it in the front client too.
 if os.getenv('TAIGA_IMPORTER_GITHUB_ENABLED').lower() == 'true':
+    print("Taiga github importer enabled", file=sys.stderr)
     IMPORTERS["github"] = {
         "active": True, # Enable or disable the importer
         "client_id": os.getenv('TAIGA_IMPORTER_GITHUB_CLIENT_ID'),
@@ -142,6 +151,7 @@ if os.getenv('TAIGA_IMPORTER_GITHUB_ENABLED').lower() == 'true':
 # Configuration for the Trello importer
 # Remember to enable it in the front client too.
 if os.getenv('TAIGA_IMPORTER_TRELLO_ENABLED').lower() == 'true':
+    print("Taiga trello importer enabled", file=sys.stderr)
     IMPORTERS["trello"] = {
         "active": True, # Enable or disable the importer
         "api_key": os.getenv('TAIGA_IMPORTER_TRELLO_API_KEY'),
@@ -152,6 +162,7 @@ if os.getenv('TAIGA_IMPORTER_TRELLO_ENABLED').lower() == 'true':
 # Configuration for the Jira importer
 # Remember to enable it in the front client too.
 if os.getenv('TAIGA_IMPORTER_JIRA_ENABLED').lower() == 'true':
+    print("Taiga jira importer enabled", file=sys.stderr)
     IMPORTERS["jira"] = {
         "active": True, # Enable or disable the importer
         "consumer_key": os.getenv('TAIGA_IMPORTER_JIRA_CONSUMER_KEY'),
@@ -163,6 +174,7 @@ if os.getenv('TAIGA_IMPORTER_JIRA_ENABLED').lower() == 'true':
 # Configuration for the Asane importer
 # Remember to enable it in the front client too.
 if os.getenv('TAIGA_IMPORTER_ASANA_ENABLED').lower() == 'true':
+    print("Taiga asana importer enabled", file=sys.stderr)
     IMPORTERS["asana"] = {
         "active": True, # Enable or disable the importer
         "callback_url": "{}://{}/project/new/import/asana".format(SITES["front"]["scheme"],
@@ -177,9 +189,11 @@ if os.getenv('TAIGA_IMPORTER_ASANA_ENABLED').lower() == 'true':
 #########################################
 
 if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
+    print("Taiga events enabled", file=sys.stderr)
     if os.getenv('TAIGA_ASYNC_ENABLED').lower() == 'true':
         from .celery import *
 
+        print("Taiga async mode enabled", file=sys.stderr)
         # Set to True to enable celery and work in async mode or False
         # to disable it and work in sync mode. You can find the celery
         # settings in settings/celery.py and settings/celery-local.py
