@@ -9,21 +9,22 @@
 [![](https://images.microbadger.com/badges/version/monogramm/docker-taiga-back-base.svg)](https://microbadger.com/images/monogramm/docker-taiga-back-base)
 [![](https://images.microbadger.com/badges/image/monogramm/docker-taiga-back-base.svg)](https://microbadger.com/images/monogramm/docker-taiga-back-base)
 
+
 # Docker image for taiga-back
 
 This Docker repository provides the [taiga-back](https://github.com/taigaio/taiga-back) server with a configuration suitable to use with [taiga-front](https://github.com/taigaio/taiga-front).
 
-:construction: **This container is still in development!**
-
 This image was inspired by [ajira86/docker-taiga](https://github.com/ajira86/docker-taiga) which is a fork of [benhutchins/docker-taiga](https://github.com/benhutchins/docker-taiga).
 
 For a more advanced image and full docker-compose example, checkout [Monogramm/docker-taiga](https://github.com/Monogramm/docker-taiga).
+
 
 ## What is Taiga?
 
 Taiga is a project management platform for startups and agile developers & designers who want a simple, beautiful tool that makes work truly enjoyable.
 
 > [taiga.io](https://taiga.io)
+
 
 ## Build Docker image
 
@@ -32,6 +33,32 @@ To generate docker images from the template, execute `update.sh` script.
 Install Docker and then run `docker build -t docker-taiga-back-base images/VARIANT/VERSION` to build the image for the variant and version you need.
 
 You can also build all images by running `update.sh build`.
+
+
+# Adding Features
+If the image does not include the packages you need, you can easily build your own image on top of it.
+Start your derived image with the `FROM` statement and add whatever you like.
+
+```Dockerfile
+FROM monogramm/docker-taiga-back-base:alpine
+
+RUN ...
+
+```
+
+You can also clone this repository and use the [update.sh](update.sh) shell script to generate a new Dockerfile based on your own needs.
+
+For instance, you could build a container based on Dolibarr develop branch by setting the `update.sh` versions like this:
+```bash
+latests=( "master" )
+```
+Then simply call [update.sh](update.sh) script.
+
+```console
+bash update.sh
+```
+Your Dockerfile(s) will be generated in the `images/` folder.
+
 
 ## Auto configuration via environment variables
 
@@ -91,7 +118,7 @@ TAIGA_DB_PASSWORD=somethingsecure
 
 *Default value*: `localhost`
 
-Your service hostname (REQUIRED)
+Your service hostname (REQUIRED). Remember to set it in the front client too.
 
 Examples:
 ```
@@ -196,7 +223,7 @@ TAIGA_ADMIN_PASSWORD=somethingverysecure
 
 *Default value*: `False`
 
-Activate SSL.
+Activate SSL. Remember to enable it in the front client too.
 
 Examples:
 ```
@@ -208,7 +235,7 @@ TAIGA_SSL=True
 
 *Default value*: `False`
 
-Activate SSL through a reverse proxy.
+Activate SSL through a reverse proxy. Remember to enable it in the front client too.
 
 Examples:
 ```
@@ -231,7 +258,7 @@ TAIGA_SECRET_KEY=somethingreallysecureandrandom
 
 *Default value*: `False`
 
-Enable Taiga backend debug mode.
+Enable Taiga debug mode.
 
 Examples:
 ```
@@ -243,7 +270,7 @@ TAIGA_DEBUG=true
 
 *Default value*: `False`
 
-Enable Taiga backend template debug mode.
+Enable Taiga template debug mode.
 
 Examples:
 ```
@@ -256,10 +283,176 @@ TAIGA_TEMPLATE_DEBUG=
 
 *Default value*: `False`
 
-Enable Taiga backend registration.
+Enable Taiga registration.
 
 Examples:
 ```
 TAIGA_PUBLIC_REGISTER_ENABLED=False
 TAIGA_PUBLIC_REGISTER_ENABLED=True
+```
+
+### TAIGA_SITEMAP_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga sitemap.
+
+Examples:
+```
+TAIGA_SITEMAP_ENABLED=False
+TAIGA_SITEMAP_ENABLED=True
+```
+
+### TAIGA_FEEDBACK_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga feedback. Remember to enable it in the front client too.
+
+Examples:
+```
+TAIGA_FEEDBACK_ENABLED=False
+```
+```
+TAIGA_FEEDBACK_ENABLED=True
+TAIGA_FEEDBACK_EMAIL=support@taiga.io
+```
+```
+TAIGA_FEEDBACK_ENABLED=True
+TAIGA_FEEDBACK_EMAIL=taiga@company.com
+```
+```
+TAIGA_FEEDBACK_ENABLED=True
+TAIGA_FEEDBACK_EMAIL=contact@company.com
+```
+
+### TAIGA_STATS_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga statistics.
+
+Examples:
+```
+TAIGA_STATS_ENABLED=False
+TAIGA_STATS_ENABLED=True
+```
+
+### TAIGA_IMPORTER_GITHUB_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga [GitHub](https://github.com) importer. Remember to enable it in the front client too. Requires GitHub client ID and secret.
+
+Examples:
+```
+TAIGA_IMPORTER_GITHUB_ENABLED=False
+```
+```
+TAIGA_IMPORTER_GITHUB_ENABLED=True
+TAIGA_IMPORTER_GITHUB_CLIENT_ID=XXXXXX_get_a_valid_client_id_from_github_XXXXXX
+TAIGA_IMPORTER_GITHUB_CLIENT_SECRET=XXXXXX_get_a_valid_client_secret_from_github_XXXXXX
+```
+
+### TAIGA_IMPORTER_TRELLO_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga [Trello](https://trello.com/) importer. Remember to enable it in the front client too. Requires Trello API key and secret.
+
+Examples:
+```
+TAIGA_IMPORTER_TRELLO_ENABLED=False
+```
+```
+TAIGA_IMPORTER_TRELLO_ENABLED=True
+TAIGA_IMPORTER_TRELLO_API_KEY=XXXXXX_get_a_valid_api_key_from_trello_XXXXXX
+TAIGA_IMPORTER_TRELLO_API_SECRET=XXXXXX_get_a_valid_secret_key_from_trello_XXXXXX
+```
+
+### TAIGA_IMPORTER_JIRA_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga [JIRA](https://www.atlassian.com/software/jira) importer. Remember to enable it in the front client too. Requires JIRA consumer key and valid certificate.
+
+Examples:
+```
+TAIGA_IMPORTER_JIRA_ENABLED=False
+```
+```
+TAIGA_IMPORTER_JIRA_ENABLED=True
+TAIGA_IMPORTER_JIRA_CONSUMER_KEY=XXXXXX_get_a_valid_consumer_key_from_jira_XXXXXX
+TAIGA_IMPORTER_JIRA_CERT=XXXXXX_get_a_valid_cert_from_jira_XXXXXX
+TAIGA_IMPORTER_JIRA_PUB_CERT=XXXXXX_get_a_valid_pub_cert_from_jira_XXXXXX
+```
+
+### TAIGA_IMPORTER_ASANA_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga [Asana](https://asana.com) importer. Remember to enable it in the front client too. Requires Asana App ID and secret.
+
+Examples:
+```
+TAIGA_IMPORTER_ASANA_ENABLED=False
+```
+```
+TAIGA_IMPORTER_ASANA_ENABLED=True
+TAIGA_IMPORTER_ASANA_APP_ID=XXXXXX_get_a_valid_app_id_from_asana_XXXXXX
+TAIGA_IMPORTER_ASANA_APP_SECRET=XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX
+```
+
+### TAIGA_EVENTS_ENABLED
+
+*Default value*: `False`
+
+Enable [Taiga Events](https://github.com/Monogramm/docker-taiga-events). Requires RabbitMQ.
+
+Examples:
+```
+TAIGA_EVENTS_ENABLED=False
+```
+```
+TAIGA_EVENTS_ENABLED=True
+RABBIT_USER=guest
+RABBIT_PASSWORD=guest
+RABBIT_HOST=rabbitmq
+RABBIT_PORT=5672
+```
+```
+TAIGA_EVENTS_ENABLED=True
+RABBIT_USER=taiga
+RABBIT_PASSWORD=somethingverysecure
+RABBIT_HOST=taiga_rabbitmq
+RABBIT_PORT=5672
+```
+
+### TAIGA_ASYNC_ENABLED
+
+*Default value*: `False`
+
+Enable Taiga asynchronous mode. Requires Redis, Celery and RabbitMQ.
+
+Examples:
+```
+TAIGA_ASYNC_ENABLED=False
+```
+```
+TAIGA_ASYNC_ENABLED=True
+RABBIT_USER=guest
+RABBIT_PASSWORD=guest
+RABBIT_HOST=rabbitmq
+RABBIT_PORT=5672
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+```
+TAIGA_ASYNC_ENABLED=True
+RABBIT_USER=taiga
+RABBIT_PASSWORD=somethingverysecure
+RABBIT_HOST=taiga_rabbitmq
+RABBIT_PORT=5672
+REDIS_HOST=taiga_redis
+REDIS_PORT=6379
 ```
