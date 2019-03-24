@@ -189,7 +189,6 @@ if os.getenv('TAIGA_IMPORTER_ASANA_ENABLED').lower() == 'true':
 #########################################
 
 if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
-    print("Taiga events enabled", file=sys.stderr)
     if os.getenv('TAIGA_ASYNC_ENABLED').lower() == 'true':
         from .celery import *
 
@@ -201,6 +200,7 @@ if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
         result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT') + '/0'
         CELERY_RESULT_BACKEND = result_backend
 
+    print("Taiga events enabled", file=sys.stderr)
     broker_url  = 'amqp://' + os.getenv('RABBIT_USER') + ':' + os.getenv('RABBIT_PASSWORD') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT')
     BROKER_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
