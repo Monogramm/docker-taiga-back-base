@@ -21,8 +21,8 @@ script:
   - docker-compose up -d
   - docker-compose ps
   - docker-compose logs
-  - docker-compose ps | grep "$image"
-  - docker-compose logs | grep ""
+  - travis_retry docker-compose build && docker-compose ps | grep "$image"
+  - docker-compose logs
 
 after_script:
   - docker images
