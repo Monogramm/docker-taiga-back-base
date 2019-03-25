@@ -17,6 +17,12 @@ before_script:
 
 script:
   - docker build -t "$image" "$dir"
+  - docker-compose build
+  - docker-compose up -d
+  - docker-compose ps
+  - docker-compose logs
+  - docker-compose ps | grep "$image"
+  - docker-compose logs | grep ""
 
 after_script:
   - docker images
