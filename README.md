@@ -26,6 +26,17 @@ Taiga is a project management platform for startups and agile developers & desig
 > [taiga.io](https://taiga.io)
 
 
+## Supported tags
+
+https://hub.docker.com/r/monogramm/docker-nextcloud/
+
+-	`3.3`, `3.3-alpine` (*3.3/alpine/Dockerfile*)
+-	`3.4`, `3.4-alpine`, `3`, `3-alpine` (*3.4/alpine/Dockerfile*)
+-	`4.0`, `4.0-alpine` (*4.0/alpine/Dockerfile*)
+-	`4.1`, `4.1-alpine` (*4.1/alpine/Dockerfile*)
+-	`4.2-alpine`, `4.2`, `4-alpine`, `4`, `alpine`, `latest` (*4.2/alpine/Dockerfile*)
+
+
 ## Build Docker image
 
 To generate docker images from the template, execute `update.sh` script.
@@ -74,7 +85,7 @@ See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/setting
 Your database name (REQUIRED)
 
 Examples:
-```
+```yml
 TAIGA_DB_NAME=taiga
 TAIGA_DB_NAME=taigadb
 ```
@@ -86,7 +97,7 @@ TAIGA_DB_NAME=taigadb
 Your database hostname (REQUIRED)
 
 Examples:
-```
+```yml
 TAIGA_DB_HOST=taigadb
 TAIGA_DB_HOST=taigadb.company.com
 ```
@@ -98,7 +109,7 @@ TAIGA_DB_HOST=taigadb.company.com
 Your database user (REQUIRED)
 
 Examples:
-```
+```yml
 TAIGA_DB_USER=taiga
 TAIGA_DB_USER=taigadb
 ```
@@ -110,7 +121,7 @@ TAIGA_DB_USER=taigadb
 Your database user passsword (REQUIRED)
 
 Examples:
-```
+```yml
 TAIGA_DB_PASSWORD=somethingsecure
 ```
 
@@ -121,7 +132,7 @@ TAIGA_DB_PASSWORD=somethingsecure
 Your service hostname (REQUIRED). Remember to set it in the front client too.
 
 Examples:
-```
+```yml
 TAIGA_HOSTNAME=localhost
 TAIGA_HOSTNAME=taiga.company.com
 ```
@@ -133,78 +144,34 @@ TAIGA_HOSTNAME=taiga.company.com
 Enable email server configuration
 
 Examples:
-```
+```yml
 TAIGA_ENABLE_EMAIL=False
+```
+```yml
 TAIGA_ENABLE_EMAIL=True
-```
-
-### TAIGA_EMAIL_FROM
-
-*Default value*:
-
-The default 'From' email
-
-Examples:
-```
-TAIGA_EMAIL_FROM=no-reply@company.com
-```
-
-### TAIGA_EMAIL_USE_TLS
-
-*Default value*: `False`
-
-Use STARTTLS to connect email server
-
-Examples:
-```
+TAIGA_EMAIL_FROM=no-reply@gmail.com
 TAIGA_EMAIL_USE_TLS=False
-TAIGA_EMAIL_USE_TLS=True
-```
-
-### TAIGA_EMAIL_HOST
-
-*Default value*:
-
-The email server hostname
-
-Examples:
-```
-TAIGA_EMAIL_HOST=mail.company.com
 TAIGA_EMAIL_HOST=smtp.gmail.com
-```
-
-### TAIGA_EMAIL_PORT
-
-*Default value*:
-
-The email server port
-
-Examples:
-```
-TAIGA_EMAIL_PORT=25
 TAIGA_EMAIL_PORT=465
+TAIGA_EMAIL_USER=user.taiga@gmail.com
+TAIGA_EMAIL_PASS=usertaigagmailappsecret
+```
+```yml
+TAIGA_ENABLE_EMAIL=True
+TAIGA_EMAIL_FROM=no-reply@company.com
+TAIGA_EMAIL_USE_TLS=True
+TAIGA_EMAIL_HOST=mail.company.com
 TAIGA_EMAIL_PORT=587
-```
-
-### TAIGA_EMAIL_USER
-
-*Default value*:
-
-The email server user
-
-Examples:
-```
 TAIGA_EMAIL_USER=taiga@company.com
+TAIGA_EMAIL_PASS=somethingsecure
 ```
-
-### TAIGA_EMAIL_PASS
-
-*Default value*:
-
-The email server user passsword
-
-Examples:
-```
+```yml
+TAIGA_ENABLE_EMAIL=True
+TAIGA_EMAIL_FROM=no-reply@company.com
+TAIGA_EMAIL_USE_TLS=False
+TAIGA_EMAIL_HOST=mail.company.com
+TAIGA_EMAIL_PORT=25
+TAIGA_EMAIL_USER=taiga@company.com
 TAIGA_EMAIL_PASS=somethingsecure
 ```
 
@@ -215,7 +182,7 @@ TAIGA_EMAIL_PASS=somethingsecure
 The default administrator password
 
 Examples:
-```
+```yml
 TAIGA_ADMIN_PASSWORD=somethingverysecure
 ```
 
@@ -226,7 +193,7 @@ TAIGA_ADMIN_PASSWORD=somethingverysecure
 Activate SSL. Remember to enable it in the front client too.
 
 Examples:
-```
+```yml
 TAIGA_SSL=False
 TAIGA_SSL=True
 ```
@@ -238,7 +205,7 @@ TAIGA_SSL=True
 Activate SSL through a reverse proxy. Remember to enable it in the front client too.
 
 Examples:
-```
+```yml
 TAIGA_SSL_BY_REVERSE_PROXY=False
 TAIGA_SSL_BY_REVERSE_PROXY=True
 ```
@@ -250,7 +217,7 @@ TAIGA_SSL_BY_REVERSE_PROXY=True
 Secret key used for encryption.
 
 Examples:
-```
+```yml
 TAIGA_SECRET_KEY=somethingreallysecureandrandom
 ```
 
@@ -261,9 +228,9 @@ TAIGA_SECRET_KEY=somethingreallysecureandrandom
 Enable Taiga debug mode.
 
 Examples:
-```
-TAIGA_DEBUG=false
-TAIGA_DEBUG=true
+```yml
+TAIGA_DEBUG=False
+TAIGA_DEBUG=True
 ```
 
 ### TAIGA_TEMPLATE_DEBUG
@@ -273,10 +240,9 @@ TAIGA_DEBUG=true
 Enable Taiga template debug mode.
 
 Examples:
-```
-TAIGA_TEMPLATE_DEBUG=false
-TAIGA_TEMPLATE_DEBUG=true
-TAIGA_TEMPLATE_DEBUG=
+```yml
+TAIGA_TEMPLATE_DEBUG=False
+TAIGA_TEMPLATE_DEBUG=True
 ```
 
 ### TAIGA_PUBLIC_REGISTER_ENABLED
@@ -286,7 +252,7 @@ TAIGA_TEMPLATE_DEBUG=
 Enable Taiga registration.
 
 Examples:
-```
+```yml
 TAIGA_PUBLIC_REGISTER_ENABLED=False
 TAIGA_PUBLIC_REGISTER_ENABLED=True
 ```
@@ -298,7 +264,7 @@ TAIGA_PUBLIC_REGISTER_ENABLED=True
 Enable Taiga sitemap.
 
 Examples:
-```
+```yml
 TAIGA_SITEMAP_ENABLED=False
 TAIGA_SITEMAP_ENABLED=True
 ```
@@ -310,10 +276,10 @@ TAIGA_SITEMAP_ENABLED=True
 Enable Taiga feedback. Remember to enable it in the front client too.
 
 Examples:
-```
+```yml
 TAIGA_FEEDBACK_ENABLED=False
 ```
-```
+```yml
 TAIGA_FEEDBACK_ENABLED=True
 TAIGA_FEEDBACK_EMAIL=support@taiga.io
 ```
@@ -321,7 +287,7 @@ TAIGA_FEEDBACK_EMAIL=support@taiga.io
 TAIGA_FEEDBACK_ENABLED=True
 TAIGA_FEEDBACK_EMAIL=taiga@company.com
 ```
-```
+```yml
 TAIGA_FEEDBACK_ENABLED=True
 TAIGA_FEEDBACK_EMAIL=contact@company.com
 ```
@@ -333,7 +299,7 @@ TAIGA_FEEDBACK_EMAIL=contact@company.com
 Enable Taiga statistics.
 
 Examples:
-```
+```yml
 TAIGA_STATS_ENABLED=False
 TAIGA_STATS_ENABLED=True
 ```
@@ -345,10 +311,10 @@ TAIGA_STATS_ENABLED=True
 Enable Taiga [GitHub](https://github.com) importer. Remember to enable it in the front client too. Requires GitHub client ID and secret.
 
 Examples:
-```
+```yml
 TAIGA_IMPORTER_GITHUB_ENABLED=False
 ```
-```
+```yml
 TAIGA_IMPORTER_GITHUB_ENABLED=True
 TAIGA_IMPORTER_GITHUB_CLIENT_ID=XXXXXX_get_a_valid_client_id_from_github_XXXXXX
 TAIGA_IMPORTER_GITHUB_CLIENT_SECRET=XXXXXX_get_a_valid_client_secret_from_github_XXXXXX
@@ -361,10 +327,10 @@ TAIGA_IMPORTER_GITHUB_CLIENT_SECRET=XXXXXX_get_a_valid_client_secret_from_github
 Enable Taiga [Trello](https://trello.com/) importer. Remember to enable it in the front client too. Requires Trello API key and secret.
 
 Examples:
-```
+```yml
 TAIGA_IMPORTER_TRELLO_ENABLED=False
 ```
-```
+```yml
 TAIGA_IMPORTER_TRELLO_ENABLED=True
 TAIGA_IMPORTER_TRELLO_API_KEY=XXXXXX_get_a_valid_api_key_from_trello_XXXXXX
 TAIGA_IMPORTER_TRELLO_API_SECRET=XXXXXX_get_a_valid_secret_key_from_trello_XXXXXX
@@ -377,10 +343,10 @@ TAIGA_IMPORTER_TRELLO_API_SECRET=XXXXXX_get_a_valid_secret_key_from_trello_XXXXX
 Enable Taiga [JIRA](https://www.atlassian.com/software/jira) importer. Remember to enable it in the front client too. Requires JIRA consumer key and valid certificate.
 
 Examples:
-```
+```yml
 TAIGA_IMPORTER_JIRA_ENABLED=False
 ```
-```
+```yml
 TAIGA_IMPORTER_JIRA_ENABLED=True
 TAIGA_IMPORTER_JIRA_CONSUMER_KEY=XXXXXX_get_a_valid_consumer_key_from_jira_XXXXXX
 TAIGA_IMPORTER_JIRA_CERT=XXXXXX_get_a_valid_cert_from_jira_XXXXXX
@@ -394,10 +360,10 @@ TAIGA_IMPORTER_JIRA_PUB_CERT=XXXXXX_get_a_valid_pub_cert_from_jira_XXXXXX
 Enable Taiga [Asana](https://asana.com) importer. Remember to enable it in the front client too. Requires Asana App ID and secret.
 
 Examples:
-```
+```yml
 TAIGA_IMPORTER_ASANA_ENABLED=False
 ```
-```
+```yml
 TAIGA_IMPORTER_ASANA_ENABLED=True
 TAIGA_IMPORTER_ASANA_APP_ID=XXXXXX_get_a_valid_app_id_from_asana_XXXXXX
 TAIGA_IMPORTER_ASANA_APP_SECRET=XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX
@@ -410,10 +376,10 @@ TAIGA_IMPORTER_ASANA_APP_SECRET=XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX
 Enable [Taiga Events](https://github.com/Monogramm/docker-taiga-events). Requires RabbitMQ.
 
 Examples:
-```
+```yml
 TAIGA_EVENTS_ENABLED=False
 ```
-```
+```yml
 TAIGA_EVENTS_ENABLED=True
 RABBIT_USER=guest
 RABBIT_PASSWORD=guest
@@ -435,10 +401,10 @@ RABBIT_PORT=5672
 Enable Taiga asynchronous mode. Requires Redis, Celery and RabbitMQ.
 
 Examples:
-```
+```yml
 TAIGA_ASYNC_ENABLED=False
 ```
-```
+```yml
 TAIGA_ASYNC_ENABLED=True
 RABBIT_USER=guest
 RABBIT_PASSWORD=guest
@@ -447,7 +413,7 @@ RABBIT_PORT=5672
 REDIS_HOST=redis
 REDIS_PORT=6379
 ```
-```
+```yml
 TAIGA_ASYNC_ENABLED=True
 RABBIT_USER=taiga
 RABBIT_PASSWORD=somethingverysecure
