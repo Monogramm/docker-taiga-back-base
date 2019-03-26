@@ -53,7 +53,7 @@ EXPOSE 8001
 
 VOLUME /taiga /usr/src/taiga-back/media
 
-COPY checkdb.py entrypoint.sh /
+COPY changeadminpasswd.py checkdb.py entrypoint.sh /
 COPY docker.py /usr/src/taiga-back/settings/
 COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
