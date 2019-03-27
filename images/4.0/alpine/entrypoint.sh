@@ -28,8 +28,6 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     python manage.py loaddata initial_user
     echo "Configuring initial project templates"
     python manage.py loaddata initial_project_templates
-    echo "Configuring initial roles"
-    python manage.py loaddata initial_role
 
     if [ -n $TAIGA_ADMIN_PASSWORD ]; then
       echo "Changing initial admin password"
