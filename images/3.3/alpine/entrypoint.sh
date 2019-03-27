@@ -17,6 +17,10 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     exit 1
   fi
 
+  # Database migration check should be done in all startup in case of backend upgrade
+  echo "Execute database migrations..."
+  python manage.py migrate --noinput
+
   if [ $DB_CHECK_STATUS -eq 2 ]; then
     echo "Configuring initial user"
     python manage.py loaddata initial_user
@@ -30,10 +34,6 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
       python manage.py shell < /changeadminpasswd.py
     fi
   fi
-
-  # Database migration check should be done in all startup in case of backend upgrade
-  echo "Execute database migrations..."
-  python manage.py migrate --noinput
 
   # TODO Generate migrations and execute if needed
   #echo "Generate database migrations..."
