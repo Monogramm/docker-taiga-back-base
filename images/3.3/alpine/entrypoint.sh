@@ -9,7 +9,10 @@ sleep $TAIGA_SLEEP
 # Setup and check database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   echo "Running database check"
-  DB_CHECK_STATUS=$(python /checkdb.py)
+  set +e
+  python /checkdb.py
+  DB_CHECK_STATUS=$?
+  set -e
 
   if [ $DB_CHECK_STATUS -eq 1 ]; then
     echo "Failed to connect to database server or database does not exist."
