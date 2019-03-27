@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
@@ -17,9 +18,11 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   fi
 
   if [ $DB_CHECK_STATUS -eq 2 ]; then
-    echo "Configuring initial database"
+    echo "Configuring initial user"
     python manage.py loaddata initial_user
+    echo "Configuring initial project templates"
     python manage.py loaddata initial_project_templates
+    echo "Configuring initial roles"
     python manage.py loaddata initial_role
 
     if [ -n $TAIGA_ADMIN_PASSWORD ]; then
