@@ -3,7 +3,7 @@ FROM python:3.6-alpine
 LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
 
 # Taiga database, front, back, events, email and security properties
-ENV TAIGA_VERSION=4.2.2 \
+ENV TAIGA_VERSION=4.2.3 \
     TAIGA_DB_NAME=taiga \
     TAIGA_DB_HOST=taigadb \
     TAIGA_DB_USER=taiga \
