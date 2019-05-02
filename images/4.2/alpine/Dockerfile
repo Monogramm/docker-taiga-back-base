@@ -93,6 +93,7 @@ RUN set -ex; \
         libxml2-dev \
         libxslt-dev \
         musl-dev \
+        openssl \
         openssl-dev \
         postgresql-dev \
         postgresql-libs \
