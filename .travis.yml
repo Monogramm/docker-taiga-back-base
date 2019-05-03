@@ -14,7 +14,7 @@ before_script:
   - container_name="taiga_back"
 
 script:
-  - docker-compose build
+  - travis_wait docker-compose build
   - travis_retry docker-compose up -d && sleep 60 && docker-compose ps "$container_name" | grep "Up"
   - docker-compose ps
   - docker-compose logs
