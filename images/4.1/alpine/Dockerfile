@@ -1,55 +1,9 @@
 FROM python:3.6-alpine
 
-LABEL maintainer="Mathieu BRUNOT <mathieu.brunot at monogramm dot io>"
+LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
-# Taiga database, front, back, events, email and security properties
-ENV TAIGA_VERSION=4.1.1 \
-    TAIGA_DB_NAME=taiga \
-    TAIGA_DB_HOST=taigadb \
-    TAIGA_DB_USER=taiga \
-    TAIGA_DB_PASSWORD= \
-    TAIGA_HOSTNAME=localhost \
-    TAIGA_ENABLE_EMAIL=False \
-    TAIGA_EMAIL_FROM= \
-    TAIGA_EMAIL_USE_TLS=False \
-    TAIGA_EMAIL_HOST= \
-    TAIGA_EMAIL_PORT= \
-    TAIGA_EMAIL_USER= \
-    TAIGA_EMAIL_PASS= \
-    TAIGA_ADMIN_PASSWORD=123123 \
-    TAIGA_SSL=False \
-    TAIGA_SSL_BY_REVERSE_PROXY=False \
-    TAIGA_SECRET_KEY="!!!REPLACE-ME-j1598u1J^U*(y251u98u51u5981urf98u2o5uvoiiuzhlit3)!!!" \
-    TAIGA_DEBUG=False \
-    TAIGA_TEMPLATE_DEBUG=False \
-    TAIGA_PUBLIC_REGISTER_ENABLED=False \
-    TAIGA_SITEMAP_ENABLED=False \
-    TAIGA_FEEDBACK_ENABLED=False \
-    TAIGA_FEEDBACK_EMAIL= \
-    TAIGA_STATS_ENABLED=False \
-    TAIGA_IMPORTER_GITHUB_ENABLED=False \
-    TAIGA_IMPORTER_GITHUB_CLIENT_ID= \
-    TAIGA_IMPORTER_GITHUB_CLIENT_SECRET= \
-    TAIGA_IMPORTER_TRELLO_ENABLED=False \
-    TAIGA_IMPORTER_TRELLO_API_KEY= \
-    TAIGA_IMPORTER_TRELLO_API_SECRET= \
-    TAIGA_IMPORTER_JIRA_ENABLED=False \
-    TAIGA_IMPORTER_JIRA_CONSUMER_KEY= \
-    TAIGA_IMPORTER_JIRA_CERT= \
-    TAIGA_IMPORTER_JIRA_PUB_CERT= \
-    TAIGA_IMPORTER_ASANA_ENABLED=False \
-    TAIGA_IMPORTER_ASANA_APP_ID= \
-    TAIGA_IMPORTER_ASANA_APP_SECRET= \
-    TAIGA_EVENTS_ENABLED=False \
-    RABBIT_USER=guest \
-    RABBIT_PASSWORD=guest \
-    RABBIT_HOST=rabbitmq \
-    RABBIT_PORT=5672 \
-    TAIGA_ASYNC_ENABLED=False \
-    REDIS_HOST=redis \
-    REDIS_PORT=6379
-
-EXPOSE 8001
+# Build version
+ARG TAIGA_VERSION=4.1.1
 
 VOLUME /taiga /usr/src/taiga-back/media
 
@@ -63,6 +17,7 @@ ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/t
 
 WORKDIR /usr/src/taiga-back
 
+## Build time environment variables
 # specify LANG to ensure python installs locals properly
 # fixes benhutchins/docker-taiga-example#4
 # ref benhutchins/docker-taiga#15
@@ -111,6 +66,55 @@ RUN set -ex; \
     ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
     pip install --no-cache-dir -r requirements.txt
+
+## Runtime environment variables
+# Taiga database, front, back, events, email and security properties
+ENV TAIGA_DB_NAME=taiga \
+    TAIGA_DB_HOST=taigadb \
+    TAIGA_DB_USER=taiga \
+    TAIGA_DB_PASSWORD= \
+    TAIGA_HOSTNAME=localhost \
+    TAIGA_ENABLE_EMAIL=False \
+    TAIGA_EMAIL_FROM= \
+    TAIGA_EMAIL_USE_TLS=False \
+    TAIGA_EMAIL_HOST= \
+    TAIGA_EMAIL_PORT= \
+    TAIGA_EMAIL_USER= \
+    TAIGA_EMAIL_PASS= \
+    TAIGA_ADMIN_PASSWORD=123123 \
+    TAIGA_SSL=False \
+    TAIGA_SSL_BY_REVERSE_PROXY=False \
+    TAIGA_SECRET_KEY="!!!REPLACE-ME-j1598u1J^U*(y251u98u51u5981urf98u2o5uvoiiuzhlit3)!!!" \
+    TAIGA_DEBUG=False \
+    TAIGA_TEMPLATE_DEBUG=False \
+    TAIGA_PUBLIC_REGISTER_ENABLED=False \
+    TAIGA_SITEMAP_ENABLED=False \
+    TAIGA_FEEDBACK_ENABLED=False \
+    TAIGA_FEEDBACK_EMAIL= \
+    TAIGA_STATS_ENABLED=False \
+    TAIGA_IMPORTER_GITHUB_ENABLED=False \
+    TAIGA_IMPORTER_GITHUB_CLIENT_ID= \
+    TAIGA_IMPORTER_GITHUB_CLIENT_SECRET= \
+    TAIGA_IMPORTER_TRELLO_ENABLED=False \
+    TAIGA_IMPORTER_TRELLO_API_KEY= \
+    TAIGA_IMPORTER_TRELLO_API_SECRET= \
+    TAIGA_IMPORTER_JIRA_ENABLED=False \
+    TAIGA_IMPORTER_JIRA_CONSUMER_KEY= \
+    TAIGA_IMPORTER_JIRA_CERT= \
+    TAIGA_IMPORTER_JIRA_PUB_CERT= \
+    TAIGA_IMPORTER_ASANA_ENABLED=False \
+    TAIGA_IMPORTER_ASANA_APP_ID= \
+    TAIGA_IMPORTER_ASANA_APP_SECRET= \
+    TAIGA_EVENTS_ENABLED=False \
+    RABBIT_USER=guest \
+    RABBIT_PASSWORD=guest \
+    RABBIT_HOST=rabbitmq \
+    RABBIT_PORT=5672 \
+    TAIGA_ASYNC_ENABLED=False \
+    REDIS_HOST=redis \
+    REDIS_PORT=6379
+
+EXPOSE 8001
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "-w 4", "-t 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]
