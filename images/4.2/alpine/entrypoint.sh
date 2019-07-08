@@ -39,10 +39,12 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     fi
   fi
 
-  # TODO Generate migrations and execute if needed
-  #log "Generate database migrations..."
-  #python manage.py makemigrations
-  #python manage.py migrate --noinput
+  if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
+    log "Generate database migrations..."
+    python manage.py makemigrations
+    log "Execute database migrations..."
+    python manage.py migrate --noinput
+  fi
 
 fi
 
