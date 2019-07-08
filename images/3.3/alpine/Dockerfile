@@ -56,7 +56,7 @@ RUN set -ex; \
         zeromq-dev \
         zlib-dev \
     ; \
-    chmod 755 /entrypoint.sh /checkdb.py; \
+    chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
     mkdir -p /tmp/taiga-back; \
     tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
     rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \

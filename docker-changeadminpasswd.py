@@ -11,7 +11,7 @@ superuser = True
 try:
     user = user_model.objects.get(username = username_unique)
 except user_model.DoesNotExist:
-    print('Creating "' + username_unique + '" user with requested password')
+    print('Creating "' + username_unique + '" user with requested password...')
     user = user_model.objects.create(username = username_unique,
                                         email = email,
                                         full_name = full_name,
@@ -21,7 +21,7 @@ except user_model.DoesNotExist:
     user.save()
     print('User "' + username_unique + '" created with requested password')
 else:
-    print('Updating "' + username_unique + '" user with requested password')
+    print('Updating "' + username_unique + '" user with requested password...')
     user.set_password(os.environ['TAIGA_ADMIN_PASSWORD'])
     user.save()
     print('User "' + username_unique + '" updated with requested password')
