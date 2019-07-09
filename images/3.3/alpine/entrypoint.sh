@@ -20,6 +20,8 @@ rsync -rlD --delete \
     --exclude=/__pycache__/ \
     /usr/src/taiga-back ./
 
+cd ./taiga-back
+
 # ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
