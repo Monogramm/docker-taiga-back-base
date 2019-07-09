@@ -5,7 +5,7 @@ LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 # Build version
 ARG TAIGA_VERSION=3.3.16
 
-VOLUME /taiga /usr/src/taiga-back/media
+VOLUME /taiga
 
 COPY changeadminpasswd.py checkdb.py entrypoint.sh /
 COPY docker.py /usr/src/taiga-back/settings/
@@ -114,6 +114,10 @@ ENV TAIGA_DB_NAME=taiga \
     TAIGA_ASYNC_ENABLED=False \
     REDIS_HOST=redis \
     REDIS_PORT=6379
+
+VOLUME /srv/taiga
+
+WORKDIR /srv/taiga
 
 EXPOSE 8001
 

@@ -5,11 +5,22 @@ log() {
   echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $@"
 }
 
+# ------------------------------------------------------------------------------
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
 : ${TAIGA_SLEEP:=0}
 sleep $TAIGA_SLEEP
 
+# ------------------------------------------------------------------------------
+log "Copying Taiga Backend sources..."
+rsync -rlD --delete \
+    --exclude=/media \
+    --exclude=/static \
+    --exclude=/taiga/projects/migrations \
+    --exclude=/__pycache__/ \
+    /usr/src/taiga-back ./
+
+# ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   log "Running database check"
@@ -39,18 +50,17 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     fi
   fi
 
-  # TODO This works... but requires to persist the backend to keep track of already executed migrations
-  # BREAKING CHANGES INCOMING
-  #if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
-  #  log "Generate database migrations..."
-  #  python manage.py makemigrations
-  #  log "Execute database migrations..."
-  #  python manage.py migrate --noinput
-  #fi
+  if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
+    log "Generate database migrations..."
+    python manage.py makemigrations
+    log "Execute database migrations..."
+    python manage.py migrate --noinput
+  fi
 
 fi
 
-# In case of frontend upgrade, locales and statics should be regenerated
+# ------------------------------------------------------------------------------
+# In case of frontend upgrade: locales and statics should be regenerated
 log "Compiling messages and collecting static"
 python manage.py compilemessages > /dev/null
 python manage.py collectstatic --noinput > /dev/null
