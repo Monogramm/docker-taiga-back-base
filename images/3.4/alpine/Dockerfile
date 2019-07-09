@@ -52,6 +52,7 @@ RUN set -ex; \
         postgresql-dev \
         postgresql-libs \
         py3-openssl \
+        rsync \
         tar \
         zeromq-dev \
         zlib-dev \
