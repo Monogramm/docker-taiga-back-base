@@ -3,7 +3,7 @@ FROM python:3.6-alpine
 LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
 # Build version
-ARG TAIGA_VERSION=4.2.7
+ARG TAIGA_VERSION=4.2.11
 
 VOLUME /taiga /usr/src/taiga-back/media
 
@@ -69,7 +69,9 @@ RUN set -ex; \
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
-ENV TAIGA_DB_NAME=taiga \
+ENV BIND_ADDRESS=0.0.0.0 \
+	PORT=8001 \
+	TAIGA_DB_NAME=taiga \
     TAIGA_DB_HOST=taigadb \
     TAIGA_DB_USER=taiga \
     TAIGA_DB_PASSWORD= \
