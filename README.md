@@ -77,6 +77,28 @@ The Taiga image supports auto configuration via environment variables. You can p
 
 See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/settings/local.py.example) and [docker-settings.py](https://github.com/Monogramm/docker-taiga-back-base/blob/master/docker-docker.py) for more details on configuration.
 
+### Gunicorn configuration
+
+Examples:
+* Default
+    ```
+	GUNICORN_TIMEOUT=60
+	GUNICORN_WORKERS=4
+	GUNICORN_LOGLEVEL=info
+	BIND_ADDRESS=0.0.0.0
+	PORT=8001
+    ```
+* SSL (you need to provide certificates yourself)
+    ```
+	GUNICORN_TIMEOUT=60
+	GUNICORN_WORKERS=4
+	GUNICORN_LOGLEVEL=warn
+    GUNICORN_CERTFILE=/etc/letsencrypt/live/my.domain.com/fullchain.pem
+    GUNICORN_KEYFILE=/etc/letsencrypt/live/my.domain.com/privkey.pem
+	BIND_ADDRESS=0.0.0.0
+	PORT=443
+    ```
+
 
 ### TAIGA_DB_NAME
 
