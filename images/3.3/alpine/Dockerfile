@@ -15,7 +15,7 @@ ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/t
 ENV LANG=C \
     LANG=en_US.UTF-8 \
     LC_TYPE=en_US.UTF-8 \
-    SOURCE_DIR=/usr/src/taiga-back \
+    SOURCE_DIR=/docker/src/taiga-back \
     WORK_DIR=/usr/src/taiga-back
 
 WORKDIR ${WORK_DIR}
