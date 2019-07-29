@@ -77,53 +77,48 @@ The Taiga image supports auto configuration via environment variables. You can p
 
 See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/settings/local.py.example) and [docker-settings.py](https://github.com/Monogramm/docker-taiga-back-base/blob/master/docker-docker.py) for more details on configuration.
 
-
-### TAIGA_DB_NAME
-
-*Default value*: `taiga`
-
-Your database name (REQUIRED)
+### Gunicorn configuration
 
 Examples:
-```yml
-TAIGA_DB_NAME=taiga
-TAIGA_DB_NAME=taigadb
-```
+* Default
+    ```
+	GUNICORN_TIMEOUT=60
+	GUNICORN_WORKERS=4
+	GUNICORN_LOGLEVEL=info
+	BIND_ADDRESS=0.0.0.0
+	PORT=8001
+    ```
+* SSL (you need to provide certificates yourself)
+    ```
+	GUNICORN_TIMEOUT=60
+	GUNICORN_WORKERS=4
+	GUNICORN_LOGLEVEL=warn
+    GUNICORN_CERTFILE=/etc/letsencrypt/live/my.domain.com/fullchain.pem
+    GUNICORN_KEYFILE=/etc/letsencrypt/live/my.domain.com/privkey.pem
+	BIND_ADDRESS=0.0.0.0
+	PORT=443
+    ```
 
-### TAIGA_DB_HOST
 
-*Default value*: `taigadb`
+### Taiga Database configuration
 
-Your database hostname (REQUIRED)
-
-Examples:
-```yml
-TAIGA_DB_HOST=taigadb
-TAIGA_DB_HOST=taigadb.company.com
-```
-
-### TAIGA_DB_USER
-
-*Default value*: `taiga`
-
-Your database user (REQUIRED)
-
-Examples:
-```yml
-TAIGA_DB_USER=taiga
-TAIGA_DB_USER=taigadb
-```
-
-### TAIGA_DB_PASSWORD
-
-*Default value*:
-
-Your database user passsword (REQUIRED)
+Your database configuration (REQUIRED).
 
 Examples:
-```yml
-TAIGA_DB_PASSWORD=somethingsecure
-```
+* Default
+    ```yml
+    TAIGA_DB_NAME=taigadb
+    TAIGA_DB_HOST=taigadb
+    TAIGA_DB_USER=taiga
+    TAIGA_DB_PASSWORD=
+    ```
+* With 
+    ```yml
+    TAIGA_DB_NAME=taigadb
+    TAIGA_DB_HOST=taigadb.company.com
+    TAIGA_DB_USER=taigadb
+    TAIGA_DB_PASSWORD=somethingsecure
+    ```
 
 ### TAIGA_HOSTNAME
 
