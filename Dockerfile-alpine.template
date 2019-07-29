@@ -70,8 +70,8 @@ RUN set -ex; \
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
 ENV BIND_ADDRESS=0.0.0.0 \
-	PORT=8001 \
-	TAIGA_DB_NAME=taiga \
+    PORT=8001 \
+    TAIGA_DB_NAME=taiga \
     TAIGA_DB_HOST=taigadb \
     TAIGA_DB_USER=taiga \
     TAIGA_DB_PASSWORD= \
@@ -119,4 +119,4 @@ ENV BIND_ADDRESS=0.0.0.0 \
 EXPOSE 8001
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "-w 4", "-t 60", "--pythonpath=.", "-b 0.0.0.0:8001", "taiga.wsgi"]
+CMD ["gunicorn", "taiga.wsgi"]
