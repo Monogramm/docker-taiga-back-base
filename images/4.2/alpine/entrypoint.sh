@@ -13,18 +13,19 @@ sleep $TAIGA_SLEEP
 
 # ------------------------------------------------------------------------------
 
-log "Copying Taiga Backend sources to working directory..."
+log "Preparing Taiga Backend sources to working directory..."
 
 # Erase all sources except exclusions
-rsync -rvlD --delete \
-    --exclude=/media \
+rsync -rlD --delete \
     --exclude=/taiga/projects/migrations \
     ${SOURCE_DIR}/* ./
 
 # Copy without erasing destinations
-rsync -rvlD \
+rsync -rlD \
     ${SOURCE_DIR}/taiga/projects/migrations ./taiga/projects/
 
+# Create media directory
+mkdir -p ./media
 
 # ------------------------------------------------------------------------------
 # Setup and check database automatically if needed

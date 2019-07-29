@@ -68,7 +68,7 @@ RUN set -ex; \
     rm -rf /tmp/taiga-back; \
     ln -s /taiga/local.py ${SOURCE_DIR}/settings/local.py; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
