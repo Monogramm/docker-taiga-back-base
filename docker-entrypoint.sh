@@ -18,7 +18,7 @@ rsync -rlD --delete \
     --exclude=/static \
     --exclude=/taiga/projects/migrations \
     --exclude=/__pycache__/ \
-    ${SOURCE_DIR}/* ./
+    ${SOURCE_DIR} ..
 
 # ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
