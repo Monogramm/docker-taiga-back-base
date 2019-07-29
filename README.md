@@ -100,52 +100,25 @@ Examples:
     ```
 
 
-### TAIGA_DB_NAME
+### Taiga Database configuration
 
-*Default value*: `taiga`
-
-Your database name (REQUIRED)
+Your database configuration (REQUIRED).
 
 Examples:
-```yml
-TAIGA_DB_NAME=taiga
-TAIGA_DB_NAME=taigadb
-```
-
-### TAIGA_DB_HOST
-
-*Default value*: `taigadb`
-
-Your database hostname (REQUIRED)
-
-Examples:
-```yml
-TAIGA_DB_HOST=taigadb
-TAIGA_DB_HOST=taigadb.company.com
-```
-
-### TAIGA_DB_USER
-
-*Default value*: `taiga`
-
-Your database user (REQUIRED)
-
-Examples:
-```yml
-TAIGA_DB_USER=taiga
-TAIGA_DB_USER=taigadb
-```
-
-### TAIGA_DB_PASSWORD
-
-*Default value*:
-
-Your database user passsword (REQUIRED)
-
-Examples:
-```yml
-TAIGA_DB_PASSWORD=somethingsecure
-```
+* Default
+    ```yml
+    TAIGA_DB_NAME=taigadb
+    TAIGA_DB_HOST=taigadb
+    TAIGA_DB_USER=taiga
+    TAIGA_DB_PASSWORD=
+    ```
+* With 
+    ```yml
+    TAIGA_DB_NAME=taigadb
+    TAIGA_DB_HOST=taigadb.company.com
+    TAIGA_DB_USER=taigadb
+    TAIGA_DB_PASSWORD=somethingsecure
+    ```
 
 ### TAIGA_HOSTNAME
 
