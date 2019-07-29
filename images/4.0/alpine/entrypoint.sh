@@ -12,15 +12,13 @@ log() {
 sleep $TAIGA_SLEEP
 
 # ------------------------------------------------------------------------------
-log "Copying Taiga Backend sources..."
+log "Copying Taiga Backend sources to working directory..."
 rsync -rlD --delete \
     --exclude=/media \
     --exclude=/static \
     --exclude=/taiga/projects/migrations \
     --exclude=/__pycache__/ \
-    /usr/src/taiga-back ./
-
-cd ./taiga-back
+    ${SOURCE_DIR}/* ./
 
 # ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
