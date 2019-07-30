@@ -67,7 +67,7 @@ RUN set -ex; \
     cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
     rm -rf /tmp/taiga-back; \
     ln -s /taiga/local.py ${SOURCE_DIR}/settings/local.py; \
-    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' ${SOURCE_DIR}/requirements.txt; \
     pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
 
 ## Runtime environment variables
