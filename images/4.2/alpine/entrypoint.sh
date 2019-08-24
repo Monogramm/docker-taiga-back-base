@@ -55,6 +55,12 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
       log "Changing initial admin password"
       python manage.py shell < /changeadminpasswd.py
     fi
+
+    #########################################
+    if [ -f /custom_db_init.sh ]; then
+      log "Executing custom database init script..."
+      /custom_db_init.sh
+    fi
   fi
 
   if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
@@ -62,6 +68,12 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     python manage.py makemigrations
     log "Execute database migrations..."
     python manage.py migrate --noinput
+  fi
+
+  #########################################
+  if [ -f /custom_db_update.sh ]; then
+    log "Executing custom database update script..."
+    /custom_db_update.sh
   fi
 
 fi
