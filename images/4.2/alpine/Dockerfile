@@ -3,7 +3,7 @@ FROM python:3.6-alpine
 LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
 # Build version
-ARG TAIGA_VERSION=4.2.11
+ARG TAIGA_VERSION=4.2.12
 
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
