@@ -14,8 +14,6 @@ ENV LANG=C \
 
 WORKDIR ${WORK_DIR}
 
-VOLUME /taiga ${WORK_DIR}
-
 COPY changeadminpasswd.py checkdb.py entrypoint.sh /
 COPY docker.py ${WORK_DIR}/settings/
 COPY conf/locale.gen /etc/
@@ -118,6 +116,8 @@ ENV BIND_ADDRESS=0.0.0.0 \
     TAIGA_ASYNC_ENABLED=False \
     REDIS_HOST=redis \
     REDIS_PORT=6379
+
+VOLUME /taiga ${WORK_DIR}
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "taiga.wsgi"]
