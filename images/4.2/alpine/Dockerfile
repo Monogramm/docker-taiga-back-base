@@ -2,12 +2,6 @@ FROM python:3.6-alpine
 
 LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
-# Build version
-ARG TAIGA_VERSION=4.2.14
-
-# Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
-
 ## Build time environment variables
 # specify LANG to ensure python installs locals properly
 # fixes benhutchins/docker-taiga-example#4
@@ -26,6 +20,12 @@ COPY changeadminpasswd.py checkdb.py entrypoint.sh /
 COPY docker.py ${WORK_DIR}/settings/
 COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
+
+# Build version
+ARG TAIGA_VERSION=4.2.14
+
+# Get Taiga
+ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
 # Install the packages we need
 # Set locale
