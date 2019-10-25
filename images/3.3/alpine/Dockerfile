@@ -41,6 +41,7 @@ RUN set -ex; \
         curl \
         gettext \
         gcc \
+        g++ \
         git \
         libffi-dev \
         libgcrypt-dev \
