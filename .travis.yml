@@ -18,13 +18,15 @@ script:
   # Test containers run
   - docker-compose up -d && sleep 60
   - docker-compose ps
-  - docker-compose logs
+  #- docker-compose logs
+  - docker-compose logs "taiga_back"
   - docker-compose ps "taiga_back" | grep "Up"
   # Test containers can be dropped and restarted
   - docker-compose down
   - docker-compose up -d && sleep 60
   - docker-compose ps
-  - docker-compose logs
+  #- docker-compose logs
+  - docker-compose logs "taiga_back"
   - docker-compose ps "taiga_back" | grep "Up"
 
 after_script:
