@@ -2,32 +2,32 @@ FROM python:3.6-alpine
 
 LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
-# Build version
-ARG TAIGA_VERSION=3.3.16
-
-VOLUME /taiga /usr/src/taiga-back/media
-
-COPY changeadminpasswd.py checkdb.py entrypoint.sh /
-COPY docker.py /usr/src/taiga-back/settings/
-COPY conf/locale.gen /etc/
-COPY conf/taiga/local.py /taiga/
-
-# Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
-
-WORKDIR /usr/src/taiga-back
-
 ## Build time environment variables
 # specify LANG to ensure python installs locals properly
 # fixes benhutchins/docker-taiga-example#4
 # ref benhutchins/docker-taiga#15
 ENV LANG=C \
     LANG=en_US.UTF-8 \
-    LC_TYPE=en_US.UTF-8
+    LC_TYPE=en_US.UTF-8 \
+    SOURCE_DIR=/usr/src/taiga-back \
+    WORK_DIR=/usr/src/taiga-back
+
+WORKDIR ${WORK_DIR}
+
+COPY changeadminpasswd.py checkdb.py entrypoint.sh /
+COPY docker.py ${WORK_DIR}/settings/
+COPY conf/locale.gen /etc/
+COPY conf/taiga/local.py /taiga/
+
+# Build version
+ARG TAIGA_VERSION=3.3.16
+
+# Get Taiga
+ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
 # Install the packages we need
 # Set locale
-#    echo "LANG=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LANG=en_US.UTF-8" > /etc/default/locale; \
 #    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
 #    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
 #    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
@@ -41,6 +41,7 @@ RUN set -ex; \
         curl \
         gettext \
         gcc \
+        g++ \
         git \
         libffi-dev \
         libgcrypt-dev \
@@ -52,6 +53,7 @@ RUN set -ex; \
         postgresql-dev \
         postgresql-libs \
         py3-openssl \
+        rsync \
         tar \
         zeromq-dev \
         zlib-dev \
@@ -60,12 +62,12 @@ RUN set -ex; \
     mkdir -p /tmp/taiga-back; \
     tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
     rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \
-    mkdir -p /usr/src/taiga-back; \
-    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* /usr/src/taiga-back; \
+    mkdir -p ${SOURCE_DIR}; \
+    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
     rm -rf /tmp/taiga-back; \
-    ln -s /taiga/local.py /usr/src/taiga-back/settings/local.py; \
-    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' requirements.txt; \
-    pip install --no-cache-dir -r requirements.txt
+    ln -s /taiga/local.py ${SOURCE_DIR}/settings/local.py; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' ${SOURCE_DIR}/requirements.txt; \
+    pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
@@ -116,7 +118,7 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
-EXPOSE 8001
+VOLUME /taiga ${WORK_DIR}
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "taiga.wsgi"]

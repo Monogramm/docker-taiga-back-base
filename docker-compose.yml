@@ -28,6 +28,8 @@ services:
       # Media and uploads directory. Required (or you will lose all uploads)
       - /srv/taiga/back/media:/usr/src/taiga-back/media
       - /srv/taiga/back/static:/usr/src/taiga-back/static
+      # TODO Persist all backend sources to keep migrations, media and uploads
+      #- /srv/taiga/back/:/usr/src/taiga-back/
       # Taiga configuration directory. Makes it easier to change configuration with your own
       #- /srv/taiga/back/conf:/taiga
       - /etc/localtime:/etc/localtime:ro
@@ -48,7 +50,7 @@ services:
       - TAIGA_DB_USER=taiga
       - TAIGA_DB_PASSWORD=taiga
       # when the db comes up from docker, it is usually too quick
-      - TAIGA_SLEEP=5
+      - TAIGA_SLEEP=15
       # To use an external SMTP for emails, fill in these values:
       - TAIGA_ENABLE_EMAIL=False
       #- TAIGA_EMAIL_FROM=taiga@${TAIGA_EMAIL_DOMAIN}
@@ -104,6 +106,7 @@ services:
       #- TAIGA_HOSTNAME=taiga.${DOMAIN}
       #- TAIGA_SSL=True
       #- TAIGA_SSL_BY_REVERSE_PROXY=True
+      #- TAIGA_BACKEND_SSL=True
       # Frontend settings
       - TAIGA_DEBUG=false
       - TAIGA_DEBUG_INFO=false

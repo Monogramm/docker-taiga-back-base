@@ -5,11 +5,34 @@ log() {
   echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $@"
 }
 
+# ------------------------------------------------------------------------------
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
 : ${TAIGA_SLEEP:=0}
 sleep $TAIGA_SLEEP
 
+# ------------------------------------------------------------------------------
+
+if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
+
+  # TODO Finish this to allow proper DB migrations
+  log "Preparing copy sync of Taiga Backend sources to working directory..."
+
+  # Erase all sources except exclusions
+  rsync -rlD --delete \
+      --exclude=/taiga/projects/migrations \
+      ${SOURCE_DIR}/* "${WORK_DIR}/"
+
+  # Copy without erasing destinations
+  rsync -rlD \
+      "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
+
+fi
+
+# Create media directory
+mkdir -p ./media
+
+# ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   log "Running database check"
@@ -18,7 +41,7 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   DB_CHECK_STATUS=$?
   set -e
 
-  if [ $DB_CHECK_STATUS -eq 1 ]; then
+  if [ "$DB_CHECK_STATUS" -eq 1 ]; then
     log "Failed to connect to database server or database does not exist."
     exit 1
   fi
@@ -27,7 +50,7 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   log "Execute database migrations..."
   python manage.py migrate --noinput
 
-  if [ $DB_CHECK_STATUS -eq 2 ]; then
+  if [ "$DB_CHECK_STATUS" -eq 2 ]; then
     log "Configuring initial user"
     python manage.py loaddata initial_user
     log "Configuring initial project templates"
@@ -36,6 +59,12 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     if [ -n $TAIGA_ADMIN_PASSWORD ]; then
       log "Changing initial admin password"
       python manage.py shell < /changeadminpasswd.py
+    fi
+
+    #########################################
+    if [ -f /custom_db_init.sh ]; then
+      log "Executing custom database init script..."
+      /custom_db_init.sh
     fi
   fi
 
@@ -48,9 +77,16 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   #  python manage.py migrate --noinput
   #fi
 
+  #########################################
+  if [ -f /custom_db_update.sh ]; then
+    log "Executing custom database update script..."
+    /custom_db_update.sh
+  fi
+
 fi
 
-# In case of frontend upgrade, locales and statics should be regenerated
+# ------------------------------------------------------------------------------
+# In case of frontend upgrade: locales and statics should be regenerated
 log "Compiling messages and collecting static"
 python manage.py compilemessages > /dev/null
 python manage.py collectstatic --noinput > /dev/null

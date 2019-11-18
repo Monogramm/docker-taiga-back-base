@@ -8,6 +8,7 @@ declare -A base=(
 declare -A python_versions=(
 	[3]='3.6'
 	[4]='3.6'
+	[5]='3.6'
 )
 
 variants=(
