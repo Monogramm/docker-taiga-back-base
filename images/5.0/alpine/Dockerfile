@@ -1,4 +1,4 @@
-FROM python:-alpine
+FROM python:3.6-alpine
 
 LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 
