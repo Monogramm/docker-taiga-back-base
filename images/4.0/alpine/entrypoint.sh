@@ -15,16 +15,17 @@ sleep $TAIGA_SLEEP
 
 if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
 
+  # TODO Finish this to allow proper DB migrations
   log "Preparing copy sync of Taiga Backend sources to working directory..."
 
   # Erase all sources except exclusions
   rsync -rlD --delete \
       --exclude=/taiga/projects/migrations \
-      ${SOURCE_DIR}/* ./
+      ${SOURCE_DIR}/* "${WORK_DIR}/"
 
   # Copy without erasing destinations
   rsync -rlD \
-      ${SOURCE_DIR}/taiga/projects/migrations ./taiga/projects/
+      "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
 
 fi
 
@@ -40,7 +41,7 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   DB_CHECK_STATUS=$?
   set -e
 
-  if [ $DB_CHECK_STATUS -eq 1 ]; then
+  if [ "$DB_CHECK_STATUS" -eq 1 ]; then
     log "Failed to connect to database server or database does not exist."
     exit 1
   fi
@@ -49,7 +50,7 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   log "Execute database migrations..."
   python manage.py migrate --noinput
 
-  if [ $DB_CHECK_STATUS -eq 2 ]; then
+  if [ "$DB_CHECK_STATUS" -eq 2 ]; then
     log "Configuring initial user"
     python manage.py loaddata initial_user
     log "Configuring initial project templates"

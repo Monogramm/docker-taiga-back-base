@@ -9,7 +9,7 @@ LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
 ENV LANG=C \
     LANG=en_US.UTF-8 \
     LC_TYPE=en_US.UTF-8 \
-    SOURCE_DIR=/docker/src/taiga-back \
+    SOURCE_DIR=/usr/src/taiga-back \
     WORK_DIR=/usr/src/taiga-back
 
 WORKDIR ${WORK_DIR}
