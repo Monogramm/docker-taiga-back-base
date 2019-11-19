@@ -15,16 +15,15 @@ sleep $TAIGA_SLEEP
 
 if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
 
-  # TODO Finish this to allow proper DB migrations
   log "Preparing copy sync of Taiga Backend sources to working directory..."
 
   # Erase all sources except exclusions
-  rsync -rlD --delete \
+  rsync -rvlD --delete \
       --exclude=/taiga/projects/migrations \
       ${SOURCE_DIR}/* "${WORK_DIR}/"
 
   # Copy without erasing destinations
-  rsync -rlD \
+  rsync -rvlD \
       "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
 
 fi
@@ -68,14 +67,14 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     fi
   fi
 
-  # TODO This works... but requires to persist the backend to keep track of already executed migrations
+  # This works... but requires to persist the backend to keep track of already executed migrations
   # BREAKING CHANGES INCOMING
-  #if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
-  #  log "Generate database migrations..."
-  #  python manage.py makemigrations
-  #  log "Execute database migrations..."
-  #  python manage.py migrate --noinput
-  #fi
+  if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
+    log "Generate database migrations..."
+    python manage.py makemigrations
+    log "Execute database migrations..."
+    python manage.py migrate --noinput
+  fi
 
   #########################################
   if [ -f /custom_db_update.sh ]; then
