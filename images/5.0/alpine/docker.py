@@ -204,4 +204,4 @@ if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
     broker_url  = 'amqp://' + os.getenv('RABBIT_USER') + ':' + os.getenv('RABBIT_PASSWORD') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT')
     BROKER_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
-    EVENTS_PUSH_BACKEND_OPTIONS = {"url": broker_url  + "//"}
+    EVENTS_PUSH_BACKEND_OPTIONS = {"url": broker_url  + "/" + os.getenv('RABBIT_VHOST')}
