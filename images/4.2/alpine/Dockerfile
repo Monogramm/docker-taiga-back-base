@@ -20,7 +20,7 @@ COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
 # Build version
-ARG TAIGA_VERSION=4.2.14
+ARG TAIGA_VERSION=4.2.15
 
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
