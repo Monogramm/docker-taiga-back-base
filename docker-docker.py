@@ -44,7 +44,7 @@ STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 if os.getenv('TAIGA_ENABLE_EMAIL').lower() == 'true':
     print("Enabling Taiga emails...", file=sys.stderr)
     DEFAULT_FROM_EMAIL = os.getenv('TAIGA_EMAIL_FROM')
-    CHANGE_NOTIFICATIONS_MIN_INTERVAL = 300 # in seconds
+    CHANGE_NOTIFICATIONS_MIN_INTERVAL = int(os.getenv('TAIGA_NOTIFICATIONS_INTERVAL', '0')) # in seconds
 
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

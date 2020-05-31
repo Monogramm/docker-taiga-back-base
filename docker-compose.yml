@@ -71,6 +71,7 @@ services:
       # To use an external SMTP for emails, fill in these values:
       - TAIGA_ENABLE_EMAIL=True
       - TAIGA_EMAIL_FROM=taiga@${TAIGA_EMAIL_DOMAIN}
+      - TAIGA_NOTIFICATIONS_INTERVAL=0
       - TAIGA_EMAIL_USE_TLS=False
       - TAIGA_EMAIL_HOST=mailcatcher
       - TAIGA_EMAIL_PORT=1025

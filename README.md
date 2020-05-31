@@ -144,6 +144,7 @@ TAIGA_ENABLE_EMAIL=False
 ```yml
 TAIGA_ENABLE_EMAIL=True
 TAIGA_EMAIL_FROM=no-reply@gmail.com
+TAIGA_NOTIFICATIONS_INTERVAL=0
 TAIGA_EMAIL_USE_TLS=False
 TAIGA_EMAIL_HOST=smtp.gmail.com
 TAIGA_EMAIL_PORT=465
@@ -153,6 +154,7 @@ TAIGA_EMAIL_PASS=usertaigagmailappsecret
 ```yml
 TAIGA_ENABLE_EMAIL=True
 TAIGA_EMAIL_FROM=no-reply@company.com
+TAIGA_NOTIFICATIONS_INTERVAL=300 # requires async mode or cron
 TAIGA_EMAIL_USE_TLS=True
 TAIGA_EMAIL_HOST=mail.company.com
 TAIGA_EMAIL_PORT=587
@@ -162,6 +164,7 @@ TAIGA_EMAIL_PASS=somethingsecure
 ```yml
 TAIGA_ENABLE_EMAIL=True
 TAIGA_EMAIL_FROM=no-reply@company.com
+TAIGA_NOTIFICATIONS_INTERVAL=120 # requires async mode or cron
 TAIGA_EMAIL_USE_TLS=False
 TAIGA_EMAIL_HOST=mail.company.com
 TAIGA_EMAIL_PORT=25
