@@ -105,7 +105,7 @@ services:
     container_name: taiga_front
     #restart: always
     healthcheck:
-      test: CMD curl --fail http://localhost:80/conf.json | grep -q -e '"api":' || exit 1
+      test: curl --fail http://127.0.0.1:80/conf.json | grep -q -e '"api":' || exit 1
       interval: 60s
       timeout: 10s
       #start_period: 5s
@@ -207,12 +207,3 @@ services:
 #      - /srv/taiga/redis/:/data
 #      - /etc/localtime:/etc/localtime:ro
 #      - /etc/timezone:/etc/timezone:ro
-#
-#  # FIXME Celery docker image is deprecated since 2017
-#  taiga_celery:
-#    image: celery
-#    container_name: taiga_celery
-#    restart: always
-#    links:
-#      - taiga_rabbit
-#      - taiga_redis
