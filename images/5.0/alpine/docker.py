@@ -44,7 +44,7 @@ STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 if os.getenv('TAIGA_ENABLE_EMAIL').lower() == 'true':
     print("Enabling Taiga emails...", file=sys.stderr)
     DEFAULT_FROM_EMAIL = os.getenv('TAIGA_EMAIL_FROM')
-    CHANGE_NOTIFICATIONS_MIN_INTERVAL = 300 # in seconds
+    CHANGE_NOTIFICATIONS_MIN_INTERVAL = int(os.getenv('TAIGA_NOTIFICATIONS_INTERVAL', '0')) # in seconds
 
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -128,7 +128,6 @@ else:
 if os.getenv('TAIGA_STATS_ENABLED').lower() == 'true':
     print("Taiga statistics enabled", file=sys.stderr)
     STATS_ENABLED = True
-    FRONT_SITEMAP_CACHE_TIMEOUT = 60*60  # In second
 else:
     STATS_ENABLED = False
 
@@ -197,11 +196,11 @@ if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
         # to disable it and work in sync mode. You can find the celery
         # settings in settings/celery.py and settings/celery-local.py
         CELERY_ENABLED = True
-        result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT') + '/0'
+        result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT', '5672') + '/0'
         CELERY_RESULT_BACKEND = result_backend
 
     print("Taiga events enabled", file=sys.stderr)
-    broker_url  = 'amqp://' + os.getenv('RABBIT_USER') + ':' + os.getenv('RABBIT_PASSWORD') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT')
+    broker_url  = 'amqp://' + os.getenv('RABBIT_USER', 'guest') + ':' + os.getenv('RABBIT_PASSWORD', 'guest') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT', '6379')
     BROKER_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
     EVENTS_PUSH_BACKEND_OPTIONS = {"url": broker_url  + "/" + os.getenv('RABBIT_VHOST')}
