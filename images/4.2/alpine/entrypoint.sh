@@ -91,22 +91,22 @@ log "Compiling messages and collecting static"
 python manage.py compilemessages > /dev/null
 python manage.py collectstatic --noinput > /dev/null
 
-log "Start gunicorn server"
-GUNICORN_TIMEOUT="${GUINCORN_TIMEOUT:-60}"
-GUNICORN_WORKERS="${GUNICORN_WORKERS:-4}"
-GUNICORN_LOGLEVEL="${GUNICORN_LOGLEVEL:-info}"
-
-GUNICORN_ARGS="--pythonpath=. -t ${GUNICORN_TIMEOUT} --workers ${GUNICORN_WORKERS} --bind ${BIND_ADDRESS}:${PORT} --log-level ${GUNICORN_LOGLEVEL}"
-
-if [ -n  "${GUNICORN_CERTFILE}" ]; then
-  GUNICORN_ARGS="${GUNICORN_ARGS} --certfile=${GUNICORN_CERTFILE}"
-fi
-
-if [ -n  "${GUNICORN_KEYFILE}" ]; then
-  GUNICORN_ARGS="${GUNICORN_ARGS} --keyfile=${GUNICORN_KEYFILE}"
-fi
-
 if [ "$1" == "gunicorn" ]; then
+  log "Start gunicorn server"
+  GUNICORN_TIMEOUT="${GUINCORN_TIMEOUT:-60}"
+  GUNICORN_WORKERS="${GUNICORN_WORKERS:-4}"
+  GUNICORN_LOGLEVEL="${GUNICORN_LOGLEVEL:-info}"
+
+  GUNICORN_ARGS="--pythonpath=. -t ${GUNICORN_TIMEOUT} --workers ${GUNICORN_WORKERS} --bind ${BIND_ADDRESS}:${PORT} --log-level ${GUNICORN_LOGLEVEL}"
+
+  if [ -n  "${GUNICORN_CERTFILE}" ]; then
+    GUNICORN_ARGS="${GUNICORN_ARGS} --certfile=${GUNICORN_CERTFILE}"
+  fi
+
+  if [ -n  "${GUNICORN_KEYFILE}" ]; then
+    GUNICORN_ARGS="${GUNICORN_ARGS} --keyfile=${GUNICORN_KEYFILE}"
+  fi
+
   exec "$@" $GUNICORN_ARGS
 else
   exec "$@"

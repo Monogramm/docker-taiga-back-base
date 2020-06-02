@@ -70,6 +70,13 @@ if os.getenv('TAIGA_SSL').lower() == 'true' or os.getenv('TAIGA_SSL_BY_REVERSE_P
 
     MEDIA_URL  = 'https://' + TAIGA_HOSTNAME + '/media/'
     STATIC_URL = 'https://' + TAIGA_HOSTNAME + '/static/'
+else:
+    SITES['api']['scheme'] = 'http'
+    SITES['front']['scheme'] = 'http'
+
+    MEDIA_URL  = 'http://' + TAIGA_HOSTNAME + '/media/'
+    STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
+
 
 SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 
@@ -196,11 +203,11 @@ if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
         # to disable it and work in sync mode. You can find the celery
         # settings in settings/celery.py and settings/celery-local.py
         CELERY_ENABLED = True
-        result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT', '5672') + '/0'
+        result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT', '6379') + '/0'
         CELERY_RESULT_BACKEND = result_backend
 
     print("Taiga events enabled", file=sys.stderr)
-    broker_url  = 'amqp://' + os.getenv('RABBIT_USER', 'guest') + ':' + os.getenv('RABBIT_PASSWORD', 'guest') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT', '6379')
+    broker_url  = 'amqp://' + os.getenv('RABBIT_USER', 'guest') + ':' + os.getenv('RABBIT_PASSWORD', 'guest') + '@' + os.getenv('RABBIT_HOST') + ':' + os.getenv('RABBIT_PORT', '5672')
     BROKER_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
     EVENTS_PUSH_BACKEND_OPTIONS = {"url": broker_url  + "/" + os.getenv('RABBIT_VHOST')}

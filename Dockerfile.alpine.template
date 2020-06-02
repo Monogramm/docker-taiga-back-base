@@ -69,6 +69,9 @@ RUN set -ex; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' ${SOURCE_DIR}/requirements.txt; \
     pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
 
+# Override default celery.py with dynamic one
+COPY celery.py ${WORK_DIR}/settings/
+
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
 ENV BIND_ADDRESS=0.0.0.0 \
