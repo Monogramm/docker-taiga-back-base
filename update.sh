@@ -62,7 +62,7 @@ for latest in "${latests[@]}"; do
             ' "$dir/Dockerfile"
 
             # Copy the scripts
-            for name in entrypoint.sh checkdb.py changeadminpasswd.py docker.py celery.py ; do
+            for name in entrypoint.sh checkdb.py changeadminpasswd.py docker.py celery_local.py ; do
                 cp "docker-$name" "$dir/$name"
                 chmod 755 "$dir/$name"
             done
