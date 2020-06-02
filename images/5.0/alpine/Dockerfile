@@ -10,8 +10,6 @@ ENV LANG=C \
     SOURCE_DIR=/usr/src/taiga-back \
     WORK_DIR=/usr/src/taiga-back
 
-WORKDIR ${WORK_DIR}
-
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
 ENV BIND_ADDRESS=0.0.0.0 \
@@ -62,6 +60,8 @@ ENV BIND_ADDRESS=0.0.0.0 \
     TAIGA_ASYNC_ENABLED=False \
     REDIS_HOST=redis \
     REDIS_PORT=6379
+
+WORKDIR ${WORK_DIR}
 
 COPY changeadminpasswd.py checkdb.py entrypoint.sh /
 COPY docker.py celery_local.py ${WORK_DIR}/settings/
@@ -120,10 +120,12 @@ RUN set -ex; \
     rm -rf /tmp/taiga-back; \
     ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"; \
     chown -R taiga:taiga "${SOURCE_DIR}" "${WORK_DIR}"
 
 USER taiga
+
+RUN set -ex; \
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
 
 VOLUME /taiga ${WORK_DIR}
 
