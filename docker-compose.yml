@@ -164,6 +164,8 @@ services:
       - TAIGA_ASYNC_ENABLED=True
       - REDIS_HOST=taiga_redis
       - REDIS_PORT=6379
+      # FIXME Running a worker with superuser is a very bad idea!
+      - C_FORCE_ROOT=1
 
   taiga_front:
     #build: ./images/${VERSION}/${VARIANT}
