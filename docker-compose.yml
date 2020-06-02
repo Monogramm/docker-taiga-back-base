@@ -31,7 +31,12 @@ services:
       - /etc/timezone:/etc/timezone:ro
 
   taiga_back:
-    build: ./images/${VERSION}/${VARIANT}
+    build:
+      context: ./images/${VERSION}/${VARIANT}
+      dockerfile: Dockerfile
+      args:
+        - VCS_REF=${VCS_REF}
+        - BUILD_DATE=${BUILD_DATE}
     image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
@@ -105,7 +110,12 @@ services:
       - REDIS_PORT=6379
 
   taiga_celery:
-    build: ./images/${VERSION}/${VARIANT}
+    build:
+      context: ./images/${VERSION}/${VARIANT}
+      dockerfile: Dockerfile
+      args:
+        - VCS_REF=${VCS_REF}
+        - BUILD_DATE=${BUILD_DATE}
     image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
@@ -170,8 +180,6 @@ services:
       - TAIGA_ASYNC_ENABLED=True
       - REDIS_HOST=taiga_redis
       - REDIS_PORT=6379
-      # FIXME Running a worker with superuser is a very bad idea!
-      - C_FORCE_ROOT=1
 
   taiga_front:
     #build: ./images/${VERSION}/${VARIANT}
