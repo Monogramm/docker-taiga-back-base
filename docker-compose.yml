@@ -109,13 +109,15 @@ services:
     image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
-    container_name: taiga_back
+    container_name: taiga_celery
     #restart: always
     command: celery -A taiga worker --concurrency 4 -l INFO
     depends_on:
       taigadb:
         condition: service_healthy
       # To enable async mode, uncomment the following lines:
+      taiga_rabbit:
+        condition: service_healthy
       taiga_redis:
         condition: service_started
     ports:
