@@ -120,14 +120,10 @@ services:
         condition: service_healthy
       taiga_redis:
         condition: service_started
-    ports:
-      - "8001:8001"
     volumes:
       # Media and uploads directory. Required (or you will lose all uploads)
       - /srv/taiga/back/media:/usr/src/taiga-back/media
       - /srv/taiga/back/static:/usr/src/taiga-back/static
-      # TODO Persist all backend sources to keep migrations, media and uploads
-      #- /srv/taiga/back/:/usr/src/taiga-back/
       # Taiga configuration directory. Makes it easier to change configuration with your own
       #- /srv/taiga/back/conf:/taiga
       - /etc/localtime:/etc/localtime:ro
