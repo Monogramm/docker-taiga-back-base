@@ -20,12 +20,12 @@ if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
 
   # Erase all sources except exclusions
   rsync -rlD --delete \
-      --exclude=/taiga/projects/migrations \
-      ${SOURCE_DIR}/* "${WORK_DIR}/"
+    --exclude=/taiga/projects/migrations \
+    ${SOURCE_DIR}/* "${WORK_DIR}/"
 
   # Copy without erasing destinations
   rsync -rlD \
-      "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
+    "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
 
 fi
 

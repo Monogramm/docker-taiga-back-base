@@ -63,6 +63,11 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
+COPY changeadminpasswd.py checkdb.py entrypoint.sh /
+COPY docker.py celery_local.py ${WORK_DIR}/settings/
+COPY conf/locale.gen /etc/
+COPY conf/taiga/local.py /taiga/
+
 # Build version
 ARG TAIGA_VERSION=%%VERSION%%
 
@@ -103,28 +108,25 @@ RUN set -ex; \
         zlib-dev \
     ; \
     rm -rf /var/cache/apk/*; \
+    chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
     addgroup -S taiga; \
-    adduser -S -D -G taiga taiga
+    adduser -S -D -G taiga taiga; \
+    mkdir -p "${SOURCE_DIR}"; \
+    mkdir -p "${WORK_DIR}"; \
+    chown -R taiga:taiga "${SOURCE_DIR}" "${WORK_DIR}"
 
+# Use taiga user and do install with this user
 USER taiga
 
-COPY changeadminpasswd.py checkdb.py entrypoint.sh /
-COPY docker.py celery_local.py ${WORK_DIR}/settings/
-COPY conf/locale.gen /etc/
-COPY conf/taiga/local.py /taiga/
-
-# Create a taiga user and do install with this user
 RUN set -ex; \
-    chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
     mkdir -p /tmp/taiga-back; \
-    tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
-    rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \
-    mkdir -p ${SOURCE_DIR}; \
+    tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
+    rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
     cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
     rm -rf /tmp/taiga-back; \
-    ln -s /taiga/local.py ${SOURCE_DIR}/settings/local.py; \
-    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' ${SOURCE_DIR}/requirements.txt; \
-    pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
+    ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
 
 VOLUME /taiga ${WORK_DIR}
 
