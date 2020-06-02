@@ -22,6 +22,8 @@ script:
   #- docker-compose logs
   - docker-compose logs "taiga_back"
   - docker-compose ps "taiga_back" | grep "Up"
+  - docker-compose logs "taiga_celery"
+  - docker-compose ps "taiga_celery" | grep "Up"
   # Test containers can be dropped and restarted
   - docker-compose down
   - docker-compose up -d && sleep 60
@@ -29,6 +31,8 @@ script:
   #- docker-compose logs
   - docker-compose logs "taiga_back"
   - docker-compose ps "taiga_back" | grep "Up"
+  - docker-compose logs "taiga_celery"
+  - docker-compose ps "taiga_celery" | grep "Up"
 
 after_script:
   - docker images
