@@ -68,12 +68,6 @@ COPY docker.py celery_local.py ${WORK_DIR}/settings/
 COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
-# Build version
-ARG TAIGA_VERSION=4.0.4
-
-# Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
-
 # Install the packages we need
 # Set locale
 #    echo "LANG=en_US.UTF-8" > /etc/default/locale; \
@@ -117,6 +111,12 @@ RUN set -ex; \
 
 # Use taiga user and do install with this user
 USER taiga
+
+# Build version
+ARG TAIGA_VERSION=4.0.4
+
+# Get Taiga
+ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
 RUN set -ex; \
     mkdir -p /tmp/taiga-back; \
