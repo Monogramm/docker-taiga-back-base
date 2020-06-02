@@ -68,6 +68,12 @@ COPY docker.py celery_local.py ${WORK_DIR}/settings/
 COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
+# Build version
+ARG TAIGA_VERSION=4.0.4
+
+# Get Taiga
+ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
+
 # Install the packages we need
 # Set locale
 #    echo "LANG=en_US.UTF-8" > /etc/default/locale; \
@@ -107,18 +113,6 @@ RUN set -ex; \
     adduser -S -D -G taiga taiga; \
     mkdir -p "${SOURCE_DIR}"; \
     mkdir -p "${WORK_DIR}"; \
-    chown -R taiga:taiga "${SOURCE_DIR}" "${WORK_DIR}"
-
-# Use taiga user and do install with this user
-USER taiga
-
-# Build version
-ARG TAIGA_VERSION=4.0.4
-
-# Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
-
-RUN set -ex; \
     mkdir -p /tmp/taiga-back; \
     tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
     rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
@@ -126,7 +120,10 @@ RUN set -ex; \
     rm -rf /tmp/taiga-back; \
     ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"; \
+    chown -R taiga:taiga "${SOURCE_DIR}" "${WORK_DIR}"
+
+USER taiga
 
 VOLUME /taiga ${WORK_DIR}
 
