@@ -25,25 +25,31 @@ services:
     expose:
       - 1025
     ports:
-      - 1080:1080
+      - "1080:1080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
   taiga_back:
     build: ./images/${VERSION}/${VARIANT}
-    #image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
-    #hostname: taiga.${DOMAIN}
+    image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
+    #hostname: taiga
+    #domainname: taiga.${DOMAIN}
     container_name: taiga_back
+    domainname: taiga
     #restart: always
     healthcheck:
       test: CMD curl --fail http://127.0.0.1:8001/api/v1/ | grep -q -e '"auth":' || exit 1
+      interval: 60s
+      timeout: 10s
+      #start_period: 5s
+      retries: 4
     depends_on:
       taigadb:
         condition: service_healthy
       # To enable async mode, uncomment the following lines:
-      #- taiga_redis:
-      #  condition: service_started
+      taiga_redis:
+        condition: service_started
     ports:
       - "8001:8001"
     volumes:
@@ -74,7 +80,7 @@ services:
       # To use an external SMTP for emails, fill in these values:
       - TAIGA_ENABLE_EMAIL=True
       - TAIGA_EMAIL_FROM=taiga@${TAIGA_EMAIL_DOMAIN}
-      - TAIGA_NOTIFICATIONS_INTERVAL=0
+      - TAIGA_NOTIFICATIONS_INTERVAL=300
       - TAIGA_EMAIL_USE_TLS=False
       - TAIGA_EMAIL_HOST=mailcatcher
       - TAIGA_EMAIL_PORT=1025
@@ -94,9 +100,72 @@ services:
       - RABBIT_PORT=5672
       # Async settings
       # To enable async mode, uncomment the following lines:
-      #- TAIGA_ASYNC_ENABLED=True
-      #- REDIS_HOST=taiga_redis
-      #- REDIS_PORT=6379
+      - TAIGA_ASYNC_ENABLED=True
+      - REDIS_HOST=taiga_redis
+      - REDIS_PORT=6379
+
+  taiga_celery:
+    build: ./images/${VERSION}/${VARIANT}
+    image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
+    #hostname: taiga
+    #domainname: taiga.${DOMAIN}
+    container_name: taiga_celery
+    #restart: always
+    command: celery -A taiga worker --concurrency 4 -l INFO
+    depends_on:
+      taigadb:
+        condition: service_healthy
+      # To enable async mode, uncomment the following lines:
+      taiga_rabbit:
+        condition: service_healthy
+      taiga_redis:
+        condition: service_started
+    volumes:
+      # Media and uploads directory. Required (or you will lose all uploads)
+      - /srv/taiga/back/media:/usr/src/taiga-back/media
+      - /srv/taiga/back/static:/usr/src/taiga-back/static
+      # Taiga configuration directory. Makes it easier to change configuration with your own
+      #- /srv/taiga/back/conf:/taiga
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      # Your hostname (REQUIRED)
+      - TAIGA_HOSTNAME=localhost
+      # Secret key for cryptographic signing
+      #- TAIGA_SECRET_KEY=${TAIGA_SECRET}
+      # Admin account default password
+      #- TAIGA_ADMIN_PASSWORD=betterthan123123
+      # Database settings
+      - TAIGA_SKIP_DB_CHECK=True
+      - TAIGA_DB_HOST=taigadb
+      - TAIGA_DB_NAME=taiga
+      - TAIGA_DB_USER=taiga
+      - TAIGA_DB_PASSWORD=taiga
+      # To use an external SMTP for emails, fill in these values:
+      - TAIGA_ENABLE_EMAIL=True
+      - TAIGA_EMAIL_FROM=taiga@${TAIGA_EMAIL_DOMAIN}
+      - TAIGA_NOTIFICATIONS_INTERVAL=300
+      - TAIGA_EMAIL_USE_TLS=False
+      - TAIGA_EMAIL_HOST=mailcatcher
+      - TAIGA_EMAIL_PORT=1025
+      - TAIGA_EMAIL_USER=
+      - TAIGA_EMAIL_PASS=
+      # Backend settings
+      - TAIGA_DEBUG=False
+      # Events settings
+      - TAIGA_EVENTS_ENABLED=True
+      #- RABBIT_USER=${TAIGA_RABBIT_USER}
+      #- RABBIT_PASSWORD=${TAIGA_RABBIT_PASSWORD}
+      - RABBIT_VHOST=/
+      - RABBIT_HOST=taiga_rabbit
+      - RABBIT_PORT=5672
+      # Async settings
+      # To enable async mode, uncomment the following lines:
+      - TAIGA_ASYNC_ENABLED=True
+      - REDIS_HOST=taiga_redis
+      - REDIS_PORT=6379
+      # FIXME Running a worker with superuser is a very bad idea!
+      - C_FORCE_ROOT=1
 
   taiga_front:
     #build: ./images/${VERSION}/${VARIANT}
@@ -106,8 +175,8 @@ services:
     #restart: always
     healthcheck:
       test: curl --fail http://127.0.0.1:80/conf.json | grep -q -e '"api":' || exit 1
-      interval: 60s
-      timeout: 10s
+      interval: 30s
+      timeout: 5s
       #start_period: 5s
       retries: 4
     depends_on:
@@ -195,15 +264,15 @@ services:
       - TAIGA_EVENTS_PORT=8888
 
   # To enable async mode, uncomment the following lines:
-#  taiga_redis:
-#    image: redis:4.0-alpine
-#    container_name: taiga_redis
-#    restart: always
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#    ports:
-#      - 6379:6379
-#    volumes:
-#      - /srv/taiga/redis/:/data
-#      - /etc/localtime:/etc/localtime:ro
-#      - /etc/timezone:/etc/timezone:ro
+  taiga_redis:
+    image: redis:4.0-alpine
+    container_name: taiga_redis
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - /srv/taiga/redis/:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
