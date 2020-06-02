@@ -122,6 +122,7 @@ services:
     container_name: taiga_celery
     #restart: always
     command: celery -A taiga worker --concurrency 4 -l INFO
+    #user: taiga:taiga
     healthcheck:
       test: CMD celery -A taiga inspect ping --json
       interval: 60s
@@ -180,6 +181,8 @@ services:
       - TAIGA_ASYNC_ENABLED=True
       - REDIS_HOST=taiga_redis
       - REDIS_PORT=6379
+      # FIXME Running a worker with superuser is a very bad idea!
+      - C_FORCE_ROOT=1
 
   taiga_front:
     #build: ./images/${VERSION}/${VARIANT}

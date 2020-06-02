@@ -120,12 +120,9 @@ RUN set -ex; \
     rm -rf /tmp/taiga-back; \
     ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    chown -R taiga:taiga "${SOURCE_DIR}" "${WORK_DIR}"
-
-USER taiga
-
-RUN set -ex; \
     pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
+
+#USER taiga
 
 VOLUME /taiga ${WORK_DIR}
 
