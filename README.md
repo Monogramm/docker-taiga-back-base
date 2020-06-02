@@ -75,19 +75,24 @@ See [local.py.example](https://github.com/taigaio/taiga-back/blob/master/setting
 Examples:
 
 -   Default
-        		GUNICORN_TIMEOUT=60
-        		GUNICORN_WORKERS=4
-        		GUNICORN_LOGLEVEL=info
-        		BIND_ADDRESS=0.0.0.0
-        		PORT=8001
+    ```yml
+    GUNICORN_TIMEOUT=60
+    GUNICORN_WORKERS=4
+    GUNICORN_LOGLEVEL=info
+    BIND_ADDRESS=0.0.0.0
+    PORT=8001
+    ```
+
 -   SSL (you need to provide certificates yourself)
-        		GUNICORN_TIMEOUT=60
-        		GUNICORN_WORKERS=4
-        		GUNICORN_LOGLEVEL=warn
-        GUNICORN_CERTFILE=/etc/letsencrypt/live/my.domain.com/fullchain.pem
-        GUNICORN_KEYFILE=/etc/letsencrypt/live/my.domain.com/privkey.pem
-        		BIND_ADDRESS=0.0.0.0
-        		PORT=443
+    ```yml
+    GUNICORN_TIMEOUT=60
+    GUNICORN_WORKERS=4
+    GUNICORN_LOGLEVEL=warn
+    GUNICORN_CERTFILE=/etc/letsencrypt/live/my.domain.com/fullchain.pem
+    GUNICORN_KEYFILE=/etc/letsencrypt/live/my.domain.com/privkey.pem
+    BIND_ADDRESS=0.0.0.0
+    PORT=443
+    ```
 
 ### Taiga Database configuration
 
@@ -102,7 +107,8 @@ Examples:
     TAIGA_DB_USER=taiga
     TAIGA_DB_PASSWORD=
     ```
--   With 
+
+-   With external database
     ```yml
     TAIGA_DB_NAME=taigadb
     TAIGA_DB_HOST=taigadb.company.com
