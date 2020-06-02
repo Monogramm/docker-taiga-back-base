@@ -20,7 +20,7 @@ from kombu import Queue
 import os
 
 broker_url = 'amqp://' + os.getenv('RABBIT_USER', 'guest') + ':' + os.getenv('RABBIT_PASSWORD', 'guest') + '@' + os.getenv('RABBIT_HOST', 'localhost') + ':' + os.getenv('RABBIT_PORT', '5672') + '//'
-result_backend = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT', '6379') + '/0'
+result_backend = 'redis://' + os.getenv('REDIS_HOST', 'localhost') + ':' + os.getenv('REDIS_PORT', '6379') + '/0'
 
 accept_content = ['pickle',] # Values are 'pickle', 'json', 'msgpack' and 'yaml'
 task_serializer = "pickle"
