@@ -10,6 +10,65 @@ ENV LANG=C \
     SOURCE_DIR=/usr/src/taiga-back \
     WORK_DIR=/usr/src/taiga-back
 
+WORKDIR ${WORK_DIR}
+
+COPY changeadminpasswd.py checkdb.py entrypoint.sh /
+COPY docker.py celery_local.py ${WORK_DIR}/settings/
+COPY conf/locale.gen /etc/
+COPY conf/taiga/local.py /taiga/
+
+# Build version
+ARG TAIGA_VERSION=4.0.4
+
+# Get Taiga
+ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
+
+# Install the packages we need
+# Set locale
+#    echo "LANG=en_US.UTF-8" > /etc/default/locale; \
+#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
+#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
+#    echo "LANGUAGE=en" >> /etc/default/locale; \
+# Assure main scripts are executable
+# Install Taiga from tag archive
+# Setup symbolic links for configuration files
+RUN set -ex; \
+    apk add --update --no-cache \
+        ca-certificates \
+        curl \
+        gettext \
+        gcc \
+        g++ \
+        git \
+        libffi-dev \
+        libgcrypt-dev \
+        jpeg-dev \
+        libxml2-dev \
+        libxslt-dev \
+        musl-dev \
+        openssl-dev \
+        postgresql-dev \
+        postgresql-libs \
+        py3-openssl \
+        rsync \
+        tar \
+        zeromq-dev \
+        zlib-dev \
+    ; \
+    rm -rf /var/cache/apk/*; \
+    chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
+    mkdir -p "${SOURCE_DIR}"; \
+    mkdir -p "${WORK_DIR}"; \
+    mkdir -p /tmp/taiga-back; \
+    tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
+    rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
+    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
+    rm -rf /tmp/taiga-back; \
+    ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
+
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
 ENV BIND_ADDRESS=0.0.0.0 \
@@ -61,68 +120,13 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
-WORKDIR ${WORK_DIR}
-
-COPY changeadminpasswd.py checkdb.py entrypoint.sh /
-COPY docker.py celery_local.py ${WORK_DIR}/settings/
-COPY conf/locale.gen /etc/
-COPY conf/taiga/local.py /taiga/
-
-# Build version
-ARG TAIGA_VERSION=4.0.4
-
-# Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
-
-# Install the packages we need
-# Set locale
-#    echo "LANG=en_US.UTF-8" > /etc/default/locale; \
-#    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_TYPE=en_US.UTF-8" >> /etc/default/locale; \
-#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale; \
-#    echo "LANGUAGE=en" >> /etc/default/locale; \
-# Assure main scripts are executable
-# Install Taiga from tag archive
-# Setup symbolic links for configuration files
-RUN set -ex; \
-    apk add --update --no-cache \
-        ca-certificates \
-        curl \
-        gettext \
-        gcc \
-        g++ \
-        git \
-        libffi-dev \
-        libgcrypt-dev \
-        jpeg-dev \
-        libxml2-dev \
-        libxslt-dev \
-        musl-dev \
-        openssl-dev \
-        postgresql-dev \
-        postgresql-libs \
-        py3-openssl \
-        rsync \
-        tar \
-        zeromq-dev \
-        zlib-dev \
-    ; \
-    rm -rf /var/cache/apk/*; \
-    chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
-    addgroup -S taiga; \
-    adduser -S -D -G taiga taiga; \
-    mkdir -p "${SOURCE_DIR}"; \
-    mkdir -p "${WORK_DIR}"; \
-    mkdir -p /tmp/taiga-back; \
-    tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
-    rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
-    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
-    rm -rf /tmp/taiga-back; \
-    ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
-    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
-
-#USER taiga
+# TODO Setup Taiga user
+# RUN set -ex; \
+#     addgroup -S taiga; \
+#     adduser -S -D -G taiga taiga; \
+#     chown -R "${SOURCE_DIR}/"* "${WORK_DIR}/"*
+# 
+# USER taiga
 
 VOLUME /taiga ${WORK_DIR}
 
