@@ -70,12 +70,12 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
 
   # TODO This works... but requires to persist the backend to keep track of already executed migrations
   # BREAKING CHANGES INCOMING
-  #if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
-  #  log "Generate database migrations..."
-  #  python manage.py makemigrations
-  #  log "Execute database migrations..."
-  #  python manage.py migrate --noinput
-  #fi
+  if python manage.py migrate --noinput | grep 'Your models have changes that are not yet reflected in a migration'; then
+    log "Generate database migrations..."
+    python manage.py makemigrations
+    log "Execute database migrations..."
+    python manage.py migrate --noinput
+  fi
 
   #########################################
   if [ -f /custom_db_update.sh ]; then
