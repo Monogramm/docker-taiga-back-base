@@ -56,13 +56,12 @@ RUN set -ex; \
         zeromq-dev \
         zlib-dev \
     ; \
-    rm -rf /var/cache/apk/*; \
     chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
     mkdir -p "${SOURCE_DIR}"; \
     mkdir -p /tmp/taiga-back; \
     tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
     rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
-    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
+    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* "${SOURCE_DIR}"; \
     rm -rf /tmp/taiga-back; \
     ln -s "/taiga/local.py ${SOURCE_DIR}/settings/local.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
