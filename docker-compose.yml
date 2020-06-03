@@ -31,7 +31,12 @@ services:
       - /etc/timezone:/etc/timezone:ro
 
   taiga_back:
-    build: ./images/${VERSION}/${VARIANT}
+    build:
+      context: ./images/${VERSION}/${VARIANT}
+      dockerfile: Dockerfile
+      args:
+        - VCS_REF=${VCS_REF}
+        - BUILD_DATE=${BUILD_DATE}
     image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
@@ -77,6 +82,8 @@ services:
       - TAIGA_DB_NAME=taiga
       - TAIGA_DB_USER=taiga
       - TAIGA_DB_PASSWORD=taiga
+      # when the db comes up from docker, it is usually too quick
+      - TAIGA_SLEEP=5
       # To use an external SMTP for emails, fill in these values:
       - TAIGA_ENABLE_EMAIL=True
       - TAIGA_EMAIL_FROM=taiga@${TAIGA_EMAIL_DOMAIN}
@@ -105,13 +112,25 @@ services:
       - REDIS_PORT=6379
 
   taiga_celery:
-    build: ./images/${VERSION}/${VARIANT}
+    build:
+      context: ./images/${VERSION}/${VARIANT}
+      dockerfile: Dockerfile
+      args:
+        - VCS_REF=${VCS_REF}
+        - BUILD_DATE=${BUILD_DATE}
     image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
     container_name: taiga_celery
     #restart: always
     command: celery -A taiga worker --concurrency 4 -l INFO
+    #user: taiga:taiga
+    healthcheck:
+      test: CMD celery -A taiga inspect ping --json
+      interval: 60s
+      timeout: 10s
+      #start_period: 5s
+      retries: 4
     depends_on:
       taigadb:
         condition: service_healthy

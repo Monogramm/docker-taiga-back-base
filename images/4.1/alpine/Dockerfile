@@ -1,7 +1,5 @@
 FROM python:3.6-alpine
 
-LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>"
-
 ## Build time environment variables
 # specify LANG to ensure python installs locals properly
 # fixes benhutchins/docker-taiga-example#4
@@ -15,7 +13,7 @@ ENV LANG=C \
 WORKDIR ${WORK_DIR}
 
 COPY changeadminpasswd.py checkdb.py entrypoint.sh /
-COPY docker.py ${WORK_DIR}/settings/
+COPY docker.py celery_local.py ${WORK_DIR}/settings/
 COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
@@ -58,19 +56,17 @@ RUN set -ex; \
         zeromq-dev \
         zlib-dev \
     ; \
+    rm -rf /var/cache/apk/*; \
     chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
+    mkdir -p "${SOURCE_DIR}"; \
     mkdir -p /tmp/taiga-back; \
-    tar xzf /tmp/taiga-back-${TAIGA_VERSION}.tar.gz -C /tmp/taiga-back; \
-    rm /tmp/taiga-back-${TAIGA_VERSION}.tar.gz; \
-    mkdir -p ${SOURCE_DIR}; \
-    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* ${SOURCE_DIR}; \
+    tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
+    rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
+    cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* "${SOURCE_DIR}"; \
     rm -rf /tmp/taiga-back; \
-    ln -s /taiga/local.py ${SOURCE_DIR}/settings/local.py; \
-    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' ${SOURCE_DIR}/requirements.txt; \
-    pip install --no-cache-dir -r ${SOURCE_DIR}/requirements.txt
-
-# Override default celery.py with dynamic one
-COPY celery.py ${WORK_DIR}/settings/
+    ln -s /taiga/local.py "${SOURCE_DIR}/settings/local.py"; \
+    sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
@@ -123,7 +119,42 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
+# TODO Setup Taiga user
+# RUN set -ex; \
+#     addgroup -S taiga; \
+#     adduser -S -D -G taiga taiga; \
+#     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
+# 
+# USER taiga
+
 VOLUME /taiga ${WORK_DIR}
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "taiga.wsgi"]
+
+ARG VCS_REF
+ARG BUILD_DATE
+
+# Container labels (http://label-schema.org/)
+# Container annotations (https://github.com/opencontainers/image-spec)
+LABEL maintainer="Monogramm Maintainers <opensource at monogramm dot io>" \
+      product="Taiga Backend" \
+      version=$TAIGA_VERSION \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/Monogramm/docker-taiga-back-base" \
+      org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="Taiga Backend" \
+      org.label-schema.description="Agile project management platform." \
+      org.label-schema.url="http://taiga.io/" \
+      org.label-schema.vendor="Taiga Agile, LLC" \
+      org.label-schema.version=$TAIGA_VERSION \
+      org.label-schema.schema-version="1.0" \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.source="https://github.com/Monogramm/docker-taiga-back-base" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.title="Taiga Backend" \
+      org.opencontainers.image.description="Agile project management platform." \
+      org.opencontainers.image.url="http://taiga.io/" \
+      org.opencontainers.image.vendor="Taiga Agile, LLC" \
+      org.opencontainers.image.version=$TAIGA_VERSION \
+      org.opencontainers.image.authors="Kaleidos <https://kaleidos.net/>"
