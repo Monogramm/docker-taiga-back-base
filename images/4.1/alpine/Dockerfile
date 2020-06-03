@@ -131,7 +131,7 @@ RUN set -ex; \
 VOLUME /taiga ${WORK_DIR}
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "taiga.wsgi"]
+CMD ["gunicorn", "taiga.wsgi", "--user", "taiga"]
 
 ARG VCS_REF
 ARG BUILD_DATE
