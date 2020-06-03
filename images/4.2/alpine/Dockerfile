@@ -59,7 +59,6 @@ RUN set -ex; \
     rm -rf /var/cache/apk/*; \
     chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
     mkdir -p "${SOURCE_DIR}"; \
-    mkdir -p "${WORK_DIR}"; \
     mkdir -p /tmp/taiga-back; \
     tar xzf "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz" -C /tmp/taiga-back; \
     rm "/tmp/taiga-back-${TAIGA_VERSION}.tar.gz"; \
@@ -124,7 +123,7 @@ ENV BIND_ADDRESS=0.0.0.0 \
 # RUN set -ex; \
 #     addgroup -S taiga; \
 #     adduser -S -D -G taiga taiga; \
-#     chown -R "${SOURCE_DIR}/"* "${WORK_DIR}/"*
+#     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
 # 
 # USER taiga
 
