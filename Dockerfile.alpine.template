@@ -119,10 +119,11 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
-# TODO Setup Taiga user
-# RUN set -ex; \
-#     addgroup -S taiga; \
-#     adduser -S -D -G taiga taiga; \
+RUN set -ex; \
+    addgroup -S taiga; \
+    adduser -S -D -G taiga taiga
+
+# TODO Setup Taiga user as owner and current user
 #     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
 # 
 # USER taiga
