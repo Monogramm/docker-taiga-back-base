@@ -8,7 +8,7 @@ ENV LANG=C \
     LANG=en_US.UTF-8 \
     LC_TYPE=en_US.UTF-8 \
     SOURCE_DIR=/usr/src/taiga-back \
-    WORK_DIR=/usr/src/taiga-back
+    WORK_DIR=/home/taiga/taiga-back
 
 WORKDIR ${WORK_DIR}
 
@@ -121,11 +121,9 @@ ENV BIND_ADDRESS=0.0.0.0 \
 
 RUN set -ex; \
     addgroup -S taiga; \
-    adduser -S -D -G taiga taiga
+    adduser -S -D -G taiga taiga; \
+    chown -R taiga:taiga "${SOURCE_DIR}/"*
 
-# TODO Setup Taiga user as owner and current user
-#     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
-# 
 # USER taiga
 
 VOLUME /taiga ${WORK_DIR}
