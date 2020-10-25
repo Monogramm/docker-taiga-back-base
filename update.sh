@@ -15,7 +15,7 @@ variants=(
 	alpine
 )
 
-min_version='3.3'
+min_version='4.2'
 
 
 # version_greater_or_equal A B returns whether A >= B
@@ -51,8 +51,8 @@ for latest in "${latests[@]}"; do
             echo "generating $latest [$version] $variant"
             mkdir -p "$dir"
 
-            template="Dockerfile.${base[$variant]}.template"
-            cp "$template" "$dir/Dockerfile"
+            template="Dockerfile.${base[$variant]}"
+            cp "template/$template" "$dir/Dockerfile"
 
             # Replace the variables.
             sed -ri -e '
@@ -63,12 +63,12 @@ for latest in "${latests[@]}"; do
 
             # Copy the scripts
             for name in entrypoint.sh checkdb.py changeadminpasswd.py docker.py celery_local.py ; do
-                cp "docker-$name" "$dir/$name"
+                cp "template/$name" "$dir/$name"
                 chmod 755 "$dir/$name"
             done
 
             # Copy the configuration
-            cp -r "conf" "$dir"
+            cp -r "template/conf" "$dir"
 
             travisEnv='\n    - VERSION='"$version"' VARIANT='"$variant$travisEnv"
 
