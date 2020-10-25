@@ -19,7 +19,7 @@ script:
   # Test containers build
   - travis_retry docker-compose build
   # Test containers run
-  - docker-compose up -d && sleep 60
+  - docker-compose up -d && sleep 240
   - docker-compose ps
   #- docker-compose logs
   - docker-compose logs "taiga_back"
@@ -28,7 +28,7 @@ script:
   - docker-compose ps "taiga_celery" | grep "Up"
   # Test containers can be dropped and restarted
   - docker-compose down
-  - docker-compose up -d && sleep 60
+  - docker-compose up -d && sleep 240
   - docker-compose ps
   #- docker-compose logs
   - docker-compose logs "taiga_back"
@@ -44,7 +44,6 @@ notifications:
   email: false
 
 env: # Environments
-    - VERSION=4.0 VARIANT=alpine
-    - VERSION=4.1 VARIANT=alpine
     - VERSION=4.2 VARIANT=alpine
     - VERSION=5.0 VARIANT=alpine
+    - VERSION=5.5 VARIANT=alpine

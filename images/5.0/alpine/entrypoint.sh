@@ -9,7 +9,7 @@ log() {
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
 : ${TAIGA_SLEEP:=0}
-sleep $TAIGA_SLEEP
+sleep "$TAIGA_SLEEP"
 
 # ------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
   # Erase all sources except exclusions
   rsync -rlD --delete \
     --exclude=/taiga/projects/migrations \
-    ${SOURCE_DIR}/* "${WORK_DIR}/"
+    "${SOURCE_DIR}"/* "${WORK_DIR}/"
 
   # Copy without erasing destinations
   rsync -rlD \
@@ -56,7 +56,7 @@ if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
     log "Configuring initial project templates"
     python manage.py loaddata initial_project_templates
 
-    if [ -n $TAIGA_ADMIN_PASSWORD ]; then
+    if [ -n "$TAIGA_ADMIN_PASSWORD" ]; then
       log "Changing initial admin password"
       python manage.py shell < /changeadminpasswd.py
     fi
