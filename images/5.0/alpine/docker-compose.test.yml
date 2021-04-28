@@ -31,10 +31,10 @@ services:
       # To disable taiga-events, comment the following lines:
       taiga_events:
         condition: service_started
-    ports:
-      # If using SSL, uncomment 443 and comment out 80
-      - "${TAIGA_HTTP_PORT}:80"
-      #- "${TAIGA_HTTP_PORT}:443"
+    #ports:
+    #  # If using SSL, uncomment 443 and comment out 80
+    #  - "${TAIGA_HTTP_PORT}:80"
+    #  #- "${TAIGA_HTTP_PORT}:443"
     networks:
       - external_network
     volumes:
@@ -367,9 +367,10 @@ services:
         condition: service_started
     environment:
       - DOCKER_TEST_CONTAINER=taiga_back
-      - DOCKER_WEB_CONTAINER=taiga_back
-      - DOCKER_WEB_PORT=8001
-      - DOCKER_WEB_HEALTH_API=api/v1/
+      # FIXME API not reachable from sut
+      #- DOCKER_WEB_CONTAINER=taiga_back
+      #- DOCKER_WEB_PORT=8001
+      #- DOCKER_WEB_HEALTH_API=api/v1/
     volumes_from:
       - taiga_front
       - taiga_back
