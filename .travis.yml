@@ -9,36 +9,25 @@ branches:
   only:
     - develop
     - master
+    - main
+
+before_install:
+  - env | sort
+  - dir="$(pwd)/images/${VERSION}/${VARIANT}"
+
+install:
+  - cd "$dir"
+  # Execute CI build hooks
+  - ./hooks/run build
 
 before_script:
-  - env | sort
-  - export VCS_REF=`git rev-parse --short HEAD`
-  - export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
+  # Display docker images
+  - docker images
 
 script:
-  # Test containers build
-  - travis_retry docker-compose build
-  # Test containers run
-  - docker-compose up -d && sleep 240
-  - docker-compose ps
-  #- docker-compose logs
-  - docker-compose logs "taiga_back"
-  - docker-compose ps "taiga_back" | grep "Up"
-  - docker-compose logs "taiga_celery"
-  - docker-compose ps "taiga_celery" | grep "Up"
-  # Test containers can be dropped and restarted
-  - docker-compose down
-  - docker-compose up -d && sleep 240
-  - docker-compose ps
-  #- docker-compose logs
-  - docker-compose logs "taiga_back"
-  - docker-compose ps "taiga_back" | grep "Up"
-  - docker-compose logs "taiga_celery"
-  - docker-compose ps "taiga_celery" | grep "Up"
-
-after_script:
-  - docker images
-  - docker ps -a
+  - cd "$dir"
+  # Execute CI test hooks
+  - ./hooks/run test
 
 notifications:
   email: false

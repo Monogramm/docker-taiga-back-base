@@ -1,43 +1,67 @@
-version: '2.2'
+version: '2.3'
 
 services:
-  taigadb:
-    image: postgres:10-alpine
-    container_name: taigadb
+  taiga_front:
+    image: monogramm/docker-taiga-front-base:latest
+    #hostname: taiga.${DOMAIN}
+    container_name: taiga_front
     #restart: always
-    ports:
-      - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "taiga"]
-    volumes:
-      - /srv/taiga/db/data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=taiga
-      - POSTGRES_USER=taiga
-      - POSTGRES_PASSWORD=taiga
-
-  # Simple mail service for testing
-  taiga_mailer:
-    image: sj26/mailcatcher:latest
-    hostname: taiga_mailer
-    container_name: taiga_mailer
-    restart: always
-    expose:
-      - 1025
+      test: curl --fail http://127.0.0.1:80/conf.json | grep -q -e '"api":' || exit 1
+      interval: 30s
+      timeout: 5s
+      #start_period: 5s
+      retries: 4
+    depends_on:
+      taiga_back:
+        condition: service_started
+      # To disable taiga-events, comment the following lines:
+      taiga_events:
+        condition: service_started
     ports:
-      - "1080:1080"
+      - "80:80"
+      - "443:443"
     volumes:
+      # Media and uploads directory. Required for NGinx
+      - /srv/taiga/back/media:/usr/src/taiga-back/media:ro
+      - /srv/taiga/back/static:/usr/src/taiga-back/static:ro
+      # Taiga configuration directory. Makes it easier to change configuration with your own
+      #- /srv/taiga/front/conf:/taiga
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    environment:
+      # Your hostname (REQUIRED)
+      - TAIGA_HOSTNAME=localhost
+      #- TAIGA_HOSTNAME=taiga.${DOMAIN}
+      #- TAIGA_SSL=True
+      #- TAIGA_SSL_BY_REVERSE_PROXY=True
+      #- TAIGA_BACKEND_SSL=True
+      # Frontend settings
+      - TAIGA_DEBUG=false
+      - TAIGA_DEBUG_INFO=false
+      - TAIGA_DEFAULT_LANGUAGE=en
+      - TAIGA_DEFAULT_THEME=taiga
+      - TAIGA_PUBLIC_REGISTER_ENABLED=false
+      - TAIGA_FEEDBACK_ENABLED=True
+      - TAIGA_SUPPORT_URL=https://tree.taiga.io/support
+      - TAIGA_PRIVACY_POLICY_URL=
+      - TAIGA_TOS_URL=
+      - TAIGA_GDPR_URL=
+      - TAIGA_MAX_UPLOAD_SIZE=104857600
+      - TAIGA_CONTRIB_PLUGINS='slack cookie-warning'
+      #- TAIGA_CONTRIB_PLUGINS='slack cookie-warning gitlab-auth github-auth'
+      - TAIGA_GRAVATAR=true
+      - TAIGA_LOGIN_FORM_TYPE=ldap
+      # Backend settings
+      - TAIGA_BACK_HOST=taiga_back
+      - TAIGA_BACK_PORT=8001
+      # Events settings
+      - TAIGA_EVENTS_ENABLED=True
+      - TAIGA_EVENTS_HOST=taiga_events
+      - TAIGA_EVENTS_PORT=8888
 
   taiga_back:
-    build:
-      context: ./images/${VERSION}/${VARIANT}
-      dockerfile: Dockerfile
-      args:
-        - VCS_REF=${VCS_REF}
-        - BUILD_DATE=${BUILD_DATE}
-    image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
+    image: monogramm/docker-taiga-back-base:latest
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
     container_name: taiga_back
@@ -111,14 +135,24 @@ services:
       - REDIS_HOST=taiga_redis
       - REDIS_PORT=6379
 
+  taigadb:
+    image: postgres:10-alpine
+    container_name: taigadb
+    #restart: always
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "taiga"]
+    volumes:
+      - /srv/taiga/db/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=taiga
+      - POSTGRES_USER=taiga
+      - POSTGRES_PASSWORD=taiga
+
+  # To enable async mode, uncomment the following lines:
   taiga_celery:
-    build:
-      context: ./images/${VERSION}/${VARIANT}
-      dockerfile: Dockerfile
-      args:
-        - VCS_REF=${VCS_REF}
-        - BUILD_DATE=${BUILD_DATE}
-    image: monogramm/docker-taiga-back-base:${VERSION}-${VARIANT}
+    image: monogramm/docker-taiga-back-base:latest
     #hostname: taiga
     #domainname: taiga.${DOMAIN}
     container_name: taiga_celery
@@ -186,82 +220,20 @@ services:
       # FIXME Running a worker with superuser is a very bad idea!
       - C_FORCE_ROOT=1
 
-  taiga_front:
-    #build: ./images/${VERSION}/${VARIANT}
-    image: monogramm/docker-taiga-front-base:${VERSION}-${VARIANT}
-    #hostname: taiga.${DOMAIN}
-    container_name: taiga_front
-    #restart: always
+  taiga_redis:
+    image: redis:4.0-alpine
+    container_name: taiga_redis
+    restart: always
     healthcheck:
-      test: curl --fail http://127.0.0.1:80/conf.json | grep -q -e '"api":' || exit 1
-      interval: 30s
-      timeout: 5s
-      #start_period: 5s
-      retries: 4
-    depends_on:
-      taiga_back:
-        condition: service_started
-      # To disable taiga-events, comment the following lines:
-      taiga_events:
-        condition: service_started
+      test: ["CMD", "redis-cli", "ping"]
     ports:
-      - "80:80"
-      - "443:443"
+      - "6379:6379"
     volumes:
-      # Media and uploads directory. Required for NGinx
-      - /srv/taiga/back/media:/usr/src/taiga-back/media:ro
-      - /srv/taiga/back/static:/usr/src/taiga-back/static:ro
-      # Taiga configuration directory. Makes it easier to change configuration with your own
-      #- /srv/taiga/front/conf:/taiga
+      - /srv/taiga/redis/:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    environment:
-      # Your hostname (REQUIRED)
-      - TAIGA_HOSTNAME=localhost
-      #- TAIGA_HOSTNAME=taiga.${DOMAIN}
-      #- TAIGA_SSL=True
-      #- TAIGA_SSL_BY_REVERSE_PROXY=True
-      #- TAIGA_BACKEND_SSL=True
-      # Frontend settings
-      - TAIGA_DEBUG=false
-      - TAIGA_DEBUG_INFO=false
-      - TAIGA_DEFAULT_LANGUAGE=en
-      - TAIGA_DEFAULT_THEME=taiga
-      - TAIGA_PUBLIC_REGISTER_ENABLED=false
-      - TAIGA_FEEDBACK_ENABLED=True
-      - TAIGA_SUPPORT_URL=https://tree.taiga.io/support
-      - TAIGA_PRIVACY_POLICY_URL=
-      - TAIGA_TOS_URL=
-      - TAIGA_GDPR_URL=
-      - TAIGA_MAX_UPLOAD_SIZE=104857600
-      - TAIGA_CONTRIB_PLUGINS='slack cookie-warning'
-      #- TAIGA_CONTRIB_PLUGINS='slack cookie-warning gitlab-auth github-auth'
-      - TAIGA_GRAVATAR=true
-      - TAIGA_LOGIN_FORM_TYPE=ldap
-      # Backend settings
-      - TAIGA_BACK_HOST=taiga_back
-      - TAIGA_BACK_PORT=8001
-      # Events settings
-      - TAIGA_EVENTS_ENABLED=True
-      - TAIGA_EVENTS_HOST=taiga_events
-      - TAIGA_EVENTS_PORT=8888
 
   # To disable taiga-events, comment all the following lines:
-  taiga_rabbit:
-    image: rabbitmq:3-alpine
-    hostname: taiga_rabbit
-    container_name: taiga_rabbit
-    #restart: always
-    ports:
-      - "5672:5672"
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-      timeout: 5s
-      retries: 1
-    #environment:
-    #  - RABBITMQ_DEFAULT_USER=${TAIGA_RABBIT_USER}
-    #  - RABBITMQ_DEFAULT_PASS=${TAIGA_RABBIT_PASSWORD}
-
   taiga_events:
     image: monogramm/docker-taiga-events:alpine
     container_name: taiga_events
@@ -282,16 +254,33 @@ services:
       #- TAIGA_EVENTS_SECRET=${TAIGA_SECRET}
       - TAIGA_EVENTS_PORT=8888
 
-  # To enable async mode, uncomment the following lines:
-  taiga_redis:
-    image: redis:4.0-alpine
-    container_name: taiga_redis
-    restart: always
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+  taiga_rabbit:
+    image: rabbitmq:3-alpine
+    hostname: taiga_rabbit
+    container_name: taiga_rabbit
+    #restart: always
     ports:
-      - "6379:6379"
+      - "5672:5672"
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      timeout: 5s
+      retries: 1
+    #environment:
+    #  - RABBITMQ_DEFAULT_USER=${TAIGA_RABBIT_USER}
+    #  - RABBITMQ_DEFAULT_PASS=${TAIGA_RABBIT_PASSWORD}
+
+  # Test services (do not use in production)
+
+  # Simple mail service for testing
+  taiga_mailer:
+    image: sj26/mailcatcher:latest
+    hostname: taiga_mailer
+    container_name: taiga_mailer
+    restart: always
+    expose:
+      - '1025'
+    ports:
+      - "1080:1080"
     volumes:
-      - /srv/taiga/redis/:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
