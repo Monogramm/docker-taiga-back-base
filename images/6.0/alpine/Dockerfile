@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.7-alpine
 
 ## Build time environment variables
 # specify LANG to ensure python installs locals properly
@@ -18,7 +18,7 @@ COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
 # Build version
-ARG TAIGA_VERSION=5.5.9
+ARG TAIGA_VERSION=6.0.9
 
 # Get Taiga
 ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz

@@ -23,9 +23,14 @@ Taiga is a project management platform for startups and agile developers & desig
 
 <https://hub.docker.com/r/monogramm/docker-taiga-back-base/>
 
--   `4.2-alpine`, `4.2`, `4-alpine`, `4` (_4.2/alpine/Dockerfile_)
--   `5.0-alpine`, `5.0` (_5.0/alpine/Dockerfile_)
--   `5.5-alpine`, `5.5`, `5-alpine`, `5`, `alpine`, `latest` (_5.5/alpine/Dockerfile_)
+<!-- >Docker Tags -->
+
+-   6.0.9-alpine 6.0-alpine alpine 6.0.9 6.0 latest  (`images/6.0/alpine/Dockerfile`)
+-   5.5.9-alpine 5.5-alpine 5.5.9 5.5  (`images/5.5/alpine/Dockerfile`)
+-   5.0.15-alpine 5.0-alpine 5.0.15 5.0  (`images/5.0/alpine/Dockerfile`)
+-   4.2.14-alpine 4.2-alpine 4.2.14 4.2  (`images/4.2/alpine/Dockerfile`)
+
+<!-- <Docker Tags -->
 
 ## Build Docker image
 
@@ -407,12 +412,14 @@ RABBIT_HOST=rabbitmq
 RABBIT_PORT=5672
 ```
 
-    TAIGA_EVENTS_ENABLED=True
-    RABBIT_VHOST=/
-    RABBIT_USER=taiga
-    RABBIT_PASSWORD=somethingverysecure
-    RABBIT_HOST=taiga_rabbitmq
-    RABBIT_PORT=5672
+```yml
+TAIGA_EVENTS_ENABLED=True
+RABBIT_VHOST=/
+RABBIT_USER=taiga
+RABBIT_PASSWORD=somethingverysecure
+RABBIT_HOST=taiga_rabbitmq
+RABBIT_PORT=5672
+```
 
 ### TAIGA_ASYNC_ENABLED
 
@@ -447,6 +454,23 @@ RABBIT_PORT=5672
 REDIS_HOST=taiga_redis
 REDIS_PORT=6379
 ```
+
+### TAIGA_TELEMETRY_ENABLED
+
+_Default value_: `False`
+
+Enable Telemetry anonymous data in order to learn about the use of Taiga and improve the platform based on real scenarios.
+
+Examples:
+
+```yml
+TAIGA_TELEMETRY_ENABLED=False
+```
+
+```yml
+TAIGA_TELEMETRY_ENABLED=True
+```
+
 
 ---
 

@@ -37,6 +37,7 @@ RUN set -ex; \
     apk add --update --no-cache \
         ca-certificates \
         curl \
+        cargo \
         gettext \
         gcc \
         g++ \
