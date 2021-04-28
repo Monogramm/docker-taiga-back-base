@@ -366,8 +366,10 @@ services:
       taiga_front:
         condition: service_started
     environment:
-      - DOCKER_TEST_CONTAINER=taiga_front
-      - DOCKER_WEB_CONTAINER=taiga_front
+      - DOCKER_TEST_CONTAINER=taiga_back
+      - DOCKER_WEB_CONTAINER=taiga_back
+      - DOCKER_WEB_PORT=8001
+      - DOCKER_WEB_HEALTH_API=api/v1/
     volumes_from:
       - taiga_front
       - taiga_back
