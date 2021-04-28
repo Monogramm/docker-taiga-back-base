@@ -412,12 +412,14 @@ RABBIT_HOST=rabbitmq
 RABBIT_PORT=5672
 ```
 
-    TAIGA_EVENTS_ENABLED=True
-    RABBIT_VHOST=/
-    RABBIT_USER=taiga
-    RABBIT_PASSWORD=somethingverysecure
-    RABBIT_HOST=taiga_rabbitmq
-    RABBIT_PORT=5672
+```yml
+TAIGA_EVENTS_ENABLED=True
+RABBIT_VHOST=/
+RABBIT_USER=taiga
+RABBIT_PASSWORD=somethingverysecure
+RABBIT_HOST=taiga_rabbitmq
+RABBIT_PORT=5672
+```
 
 ### TAIGA_ASYNC_ENABLED
 
@@ -452,6 +454,23 @@ RABBIT_PORT=5672
 REDIS_HOST=taiga_redis
 REDIS_PORT=6379
 ```
+
+### TAIGA_TELEMETRY_ENABLED
+
+_Default value_: `False`
+
+Enable Telemetry anonymous data in order to learn about the use of Taiga and improve the platform based on real scenarios.
+
+Examples:
+
+```yml
+TAIGA_TELEMETRY_ENABLED=False
+```
+
+```yml
+TAIGA_TELEMETRY_ENABLED=True
+```
+
 
 ---
 

@@ -211,3 +211,13 @@ if os.getenv('TAIGA_EVENTS_ENABLED').lower() == 'true':
     BROKER_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
     EVENTS_PUSH_BACKEND_OPTIONS = {"url": broker_url  + "/" + os.getenv('RABBIT_VHOST')}
+
+#########################################
+## TELEMETRY
+#########################################
+
+if os.getenv('TAIGA_TELEMETRY_ENABLED').lower() == 'true':
+    print("Taiga anonymous telemetry enabled", file=sys.stderr)
+    ENABLE_TELEMETRY = True
+else:
+    ENABLE_TELEMETRY = False
