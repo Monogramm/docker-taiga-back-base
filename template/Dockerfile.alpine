@@ -118,7 +118,8 @@ ENV BIND_ADDRESS=0.0.0.0 \
     RABBIT_PORT=5672 \
     TAIGA_ASYNC_ENABLED=False \
     REDIS_HOST=redis \
-    REDIS_PORT=6379
+    REDIS_PORT=6379 \
+    TAIGA_TELEMETRY_ENABLED=False
 
 # TODO Setup Taiga user
 # RUN set -ex; \
