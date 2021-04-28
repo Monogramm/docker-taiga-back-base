@@ -2,14 +2,13 @@
 set -e
 
 log() {
-  echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $@"
+  echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $*"
 }
 
 # ------------------------------------------------------------------------------
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
-: ${TAIGA_SLEEP:=0}
-sleep "$TAIGA_SLEEP"
+sleep "${TAIGA_SLEEP:-0}"
 
 # ------------------------------------------------------------------------------
 
