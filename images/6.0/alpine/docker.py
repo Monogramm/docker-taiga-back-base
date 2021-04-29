@@ -23,6 +23,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('TAIGA_DB_NAME'),
         'HOST': os.getenv('TAIGA_DB_HOST'),
+        'PORT': os.getenv('TAIGA_DB_PORT','5432'),
         'USER': os.getenv('TAIGA_DB_USER'),
         'PASSWORD': os.getenv('TAIGA_DB_PASSWORD')
     }
@@ -33,9 +34,13 @@ TAIGA_HOSTNAME = os.getenv('TAIGA_HOSTNAME')
 SITES['api']['domain'] = TAIGA_HOSTNAME
 SITES['front']['domain'] = TAIGA_HOSTNAME
 
-MEDIA_URL  = 'http://' + TAIGA_HOSTNAME + '/media/'
-STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
+INSTANCE_TYPE = "D"
 
+WEBHOOKS_ENABLED = True
+
+# Setting DEFAULT_PROJECT_SLUG_PREFIX to false
+# removes the username from project slug
+DEFAULT_PROJECT_SLUG_PREFIX = os.getenv('DEFAULT_PROJECT_SLUG_PREFIX', 'False').lower() == 'true'
 
 #########################################
 ## MAIL SYSTEM SETTINGS
@@ -53,10 +58,23 @@ if os.getenv('TAIGA_ENABLE_EMAIL').lower() == 'true':
     else:
         EMAIL_USE_TLS = False
 
+    if os.getenv('TAIGA_EMAIL_USE_SSL').lower() == 'true':
+        EMAIL_USE_SSL = True
+    else:
+        EMAIL_USE_SSL = False
+
     EMAIL_HOST = os.getenv('TAIGA_EMAIL_HOST')
     EMAIL_PORT = int(os.getenv('TAIGA_EMAIL_PORT'))
     EMAIL_HOST_USER = os.getenv('TAIGA_EMAIL_USER')
     EMAIL_HOST_PASSWORD = os.getenv('TAIGA_EMAIL_PASS')
+
+
+#########################################
+## SESSION
+#########################################
+
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'True').lower() == 'true'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'True').lower() == 'true'
 
 
 #########################################
@@ -68,12 +86,14 @@ if os.getenv('TAIGA_SSL').lower() == 'true' or os.getenv('TAIGA_SSL_BY_REVERSE_P
     SITES['api']['scheme'] = 'https'
     SITES['front']['scheme'] = 'https'
 
+    TAIGA_URL  = 'https://' + TAIGA_HOSTNAME
     MEDIA_URL  = 'https://' + TAIGA_HOSTNAME + '/media/'
     STATIC_URL = 'https://' + TAIGA_HOSTNAME + '/static/'
 else:
     SITES['api']['scheme'] = 'http'
     SITES['front']['scheme'] = 'http'
 
+    TAIGA_URL  = 'http://' + TAIGA_HOSTNAME
     MEDIA_URL  = 'http://' + TAIGA_HOSTNAME + '/media/'
     STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 
