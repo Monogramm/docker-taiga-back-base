@@ -115,5 +115,6 @@ if [ "$1" = "gunicorn" ]; then
 
   exec "$@" $GUNICORN_ARGS
 else
+  log "Executing command"
   exec "$@"
 fi

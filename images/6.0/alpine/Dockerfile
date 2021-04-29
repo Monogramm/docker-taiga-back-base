@@ -66,8 +66,10 @@ RUN set -ex; \
     cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* "${SOURCE_DIR}"; \
     rm -rf /tmp/taiga-back; \
     ln -s /taiga/local.py "${SOURCE_DIR}/settings/local.py"; \
+    ln -s /taiga/local.py "${SOURCE_DIR}/settings/config.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"; \
+    [ ! -f "${SOURCE_DIR}/requirements-contribs.txt" ] || pip install --no-cache-dir -r "${SOURCE_DIR}/requirements-contribs.txt"
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
@@ -122,6 +124,8 @@ ENV BIND_ADDRESS=0.0.0.0 \
     CELERY_ENABLED=False \
     REDIS_HOST=redis \
     REDIS_PORT=6379
+
+ENV DJANGO_SETTINGS_MODULE=settings.config
 
 # TODO Setup Taiga user
 # RUN set -ex; \
