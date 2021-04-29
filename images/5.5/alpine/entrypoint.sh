@@ -27,6 +27,10 @@ if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
   rsync -rlD \
     "${SOURCE_DIR}/taiga/projects/migrations" "${WORK_DIR}/taiga/projects/"
 
+  # TODO Give permission to taiga:taiga after mounting volumes
+  #log "Give permission to taiga:taiga"
+  #chown -R taiga:taiga "${WORK_DIR}"
+
 fi
 
 # Create media directory
@@ -91,13 +95,16 @@ log "Compiling messages and collecting static"
 python manage.py compilemessages > /dev/null
 python manage.py collectstatic --noinput > /dev/null
 
-if [ "$1" == "gunicorn" ]; then
+if [ "$1" = "gunicorn" ]; then
   log "Start gunicorn server"
   GUNICORN_TIMEOUT="${GUINCORN_TIMEOUT:-60}"
   GUNICORN_WORKERS="${GUNICORN_WORKERS:-4}"
   GUNICORN_LOGLEVEL="${GUNICORN_LOGLEVEL:-info}"
 
   GUNICORN_ARGS="--pythonpath=. -t ${GUNICORN_TIMEOUT} --workers ${GUNICORN_WORKERS} --bind ${BIND_ADDRESS}:${PORT} --log-level ${GUNICORN_LOGLEVEL}"
+
+  # TODO Start server as Taiga user
+  #GUNICORN_ARGS="${GUNICORN_ARGS} -u taiga -g taiga"
 
   if [ -n  "${GUNICORN_CERTFILE}" ]; then
     GUNICORN_ARGS="${GUNICORN_ARGS} --certfile=${GUNICORN_CERTFILE}"
