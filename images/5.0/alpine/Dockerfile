@@ -116,7 +116,7 @@ ENV BIND_ADDRESS=0.0.0.0 \
     ASANA_IMPORTER_APP_ID= \
     ASANA_IMPORTER_APP_SECRET= \
     EVENTS_ENABLED=False \
-    RABBITMQ_VHOST=/taiga \
+    RABBITMQ_VHOST=/ \
     RABBITMQ_USER=guest \
     RABBITMQ_PASS=guest \
     RABBITMQ_HOST=rabbitmq \
@@ -127,12 +127,12 @@ ENV BIND_ADDRESS=0.0.0.0 \
 
 
 
-# TODO Setup Taiga user
-# RUN set -ex; \
-#     addgroup --gid 999 -S taiga; \
-#     adduser --uid 999 -S -D -G taiga taiga; \
-#     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
-# 
+# Setup Taiga user
+RUN set -ex; \
+    addgroup --gid 5001 -S taiga; \
+    adduser --uid 5001 -S -D -G taiga taiga; \
+    chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
+
 # USER taiga
 
 VOLUME /taiga ${WORK_DIR}
