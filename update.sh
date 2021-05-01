@@ -12,6 +12,13 @@ declare -A python_versions=(
     [6]='3.7'
 )
 
+declare -A extra_env=(
+    [3]=''
+    [4]=''
+    [5]=''
+    [6]='ENV DJANGO_SETTINGS_MODULE=settings.config'
+)
+
 declare -A dockerVariant=(
     [buster]='debian'
     [buster-slim]='debian-slim'
@@ -80,6 +87,7 @@ for latest in "${latests[@]}"; do
 
             # Replace the variables.
             sed -ri -e '
+                s/%%EXTRA_ENV%%/'"${extra_env[$major]}"'/g;
                 s/%%PYTHON_VERSION%%/'"${python_versions[$major]}"'/g;
                 s/%%VARIANT%%/'"$variant"'/g;
                 s/%%VERSION%%/'"$latest"'/g;

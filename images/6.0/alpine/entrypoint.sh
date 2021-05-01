@@ -2,14 +2,13 @@
 set -e
 
 log() {
-  echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $@"
+  echo "[$(date +%Y-%m-%dT%H:%M:%S%:z)] $*"
 }
 
 # ------------------------------------------------------------------------------
 # Sleep when asked to, to allow the database time to start
 # before Taiga tries to run /checkdb.py below.
-: ${TAIGA_SLEEP:=0}
-sleep "$TAIGA_SLEEP"
+sleep "${TAIGA_SLEEP:-0}"
 
 # ------------------------------------------------------------------------------
 
@@ -34,7 +33,7 @@ if [ "${SOURCE_DIR}" != "${WORK_DIR}" ]; then
 fi
 
 # Create media directory
-mkdir -p ./media
+mkdir -p "${WORK_DIR}/media"
 
 # ------------------------------------------------------------------------------
 # Setup and check database automatically if needed
@@ -97,7 +96,7 @@ python manage.py collectstatic --noinput > /dev/null
 
 if [ "$1" = "gunicorn" ]; then
   log "Start gunicorn server"
-  GUNICORN_TIMEOUT="${GUINCORN_TIMEOUT:-60}"
+  GUNICORN_TIMEOUT="${GUNICORN_TIMEOUT:-60}"
   GUNICORN_WORKERS="${GUNICORN_WORKERS:-4}"
   GUNICORN_LOGLEVEL="${GUNICORN_LOGLEVEL:-info}"
 
@@ -116,5 +115,6 @@ if [ "$1" = "gunicorn" ]; then
 
   exec "$@" $GUNICORN_ARGS
 else
+  log "Executing command"
   exec "$@"
 fi

@@ -1,5 +1,5 @@
 [![License: AGPL v3][uri_license_image]][uri_license]
-[![Build Status](https://travis-ci.org/Monogramm/docker-taiga-back-base.svg)](https://travis-ci.org/Monogramm/docker-taiga-back-base)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Monogramm/docker-taiga-back-base/Docker%20Image%20CI)](https://github.com/Monogramm/docker-taiga-back-base/actions)
 [![Docker Automated buid](https://img.shields.io/docker/cloud/build/monogramm/docker-taiga-back-base.svg)](https://hub.docker.com/r/monogramm/docker-taiga-back-base/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/monogramm/docker-taiga-back-base.svg)](https://hub.docker.com/r/monogramm/docker-taiga-back-base/)
 [![](https://images.microbadger.com/badges/version/monogramm/docker-taiga-back-base.svg)](https://microbadger.com/images/monogramm/docker-taiga-back-base)
@@ -106,18 +106,20 @@ Examples:
 
 -   Default
     ```yml
-    TAIGA_DB_NAME=taigadb
-    TAIGA_DB_HOST=taigadb
-    TAIGA_DB_USER=taiga
-    TAIGA_DB_PASSWORD=
+    POSTGRES_DB=taigadb
+    POSTGRES_HOST=taigadb
+    POSTGRES_PORT=5432
+    POSTGRES_USER=taiga
+    POSTGRES_PASSWORD=
     ```
 
 -   With external database
     ```yml
-    TAIGA_DB_NAME=taigadb
-    TAIGA_DB_HOST=taigadb.company.com
-    TAIGA_DB_USER=taigadb
-    TAIGA_DB_PASSWORD=somethingsecure
+    POSTGRES_DB=taigadb
+    POSTGRES_HOST=taigadb.company.com
+    POSTGRES_PORT=5432
+    POSTGRES_USER=taigadb
+    POSTGRES_PASSWORD=somethingsecure
     ```
 
 ### TAIGA_HOSTNAME
@@ -142,40 +144,43 @@ Enable email server configuration
 Examples:
 
 ```yml
-TAIGA_ENABLE_EMAIL=False
+ENABLE_EMAIL=False
 ```
 
 ```yml
-TAIGA_ENABLE_EMAIL=True
-TAIGA_EMAIL_FROM=no-reply@gmail.com
+ENABLE_EMAIL=True
+DEFAULT_FROM_EMAIL=no-reply@gmail.com
 TAIGA_NOTIFICATIONS_INTERVAL=0
-TAIGA_EMAIL_USE_TLS=False
-TAIGA_EMAIL_HOST=smtp.gmail.com
-TAIGA_EMAIL_PORT=465
-TAIGA_EMAIL_USER=user.taiga@gmail.com
-TAIGA_EMAIL_PASS=usertaigagmailappsecret
+EMAIL_USE_TLS=False
+EMAIL_USE_SSL=True
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_HOST_USER=user.taiga@gmail.com
+EMAIL_HOST_PASSWORD=usertaigagmailappsecret
 ```
 
 ```yml
-TAIGA_ENABLE_EMAIL=True
-TAIGA_EMAIL_FROM=no-reply@company.com
+ENABLE_EMAIL=True
+DEFAULT_FROM_EMAIL=no-reply@company.com
 TAIGA_NOTIFICATIONS_INTERVAL=300 # requires async mode or cron
-TAIGA_EMAIL_USE_TLS=True
-TAIGA_EMAIL_HOST=mail.company.com
-TAIGA_EMAIL_PORT=587
-TAIGA_EMAIL_USER=taiga@company.com
-TAIGA_EMAIL_PASS=somethingsecure
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+EMAIL_HOST=mail.company.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=taiga@company.com
+EMAIL_HOST_PASSWORD=somethingsecure
 ```
 
 ```yml
-TAIGA_ENABLE_EMAIL=True
-TAIGA_EMAIL_FROM=no-reply@company.com
+ENABLE_EMAIL=True
+DEFAULT_FROM_EMAIL=no-reply@company.com
 TAIGA_NOTIFICATIONS_INTERVAL=120 # requires async mode or cron
-TAIGA_EMAIL_USE_TLS=False
-TAIGA_EMAIL_HOST=mail.company.com
-TAIGA_EMAIL_PORT=25
-TAIGA_EMAIL_USER=taiga@company.com
-TAIGA_EMAIL_PASS=somethingsecure
+EMAIL_USE_TLS=False
+EMAIL_USE_SSL=False
+EMAIL_HOST=mail.company.com
+EMAIL_PORT=25
+EMAIL_HOST_USER=taiga@company.com
+EMAIL_HOST_PASSWORD=somethingsecure
 ```
 
 ### TAIGA_ADMIN_PASSWORD
@@ -263,8 +268,8 @@ Enable Taiga registration.
 Examples:
 
 ```yml
-TAIGA_PUBLIC_REGISTER_ENABLED=False
-TAIGA_PUBLIC_REGISTER_ENABLED=True
+PUBLIC_REGISTER_ENABLED=False
+PUBLIC_REGISTER_ENABLED=True
 ```
 
 ### TAIGA_SITEMAP_ENABLED
@@ -276,8 +281,8 @@ Enable Taiga sitemap.
 Examples:
 
 ```yml
-TAIGA_SITEMAP_ENABLED=False
-TAIGA_SITEMAP_ENABLED=True
+SITEMAP_ENABLED=False
+SITEMAP_ENABLED=True
 ```
 
 ### TAIGA_FEEDBACK_ENABLED
@@ -289,20 +294,20 @@ Enable Taiga feedback. Remember to enable it in the front client too.
 Examples:
 
 ```yml
-TAIGA_FEEDBACK_ENABLED=False
+FEEDBACK_ENABLED=False
 ```
 
 ```yml
-TAIGA_FEEDBACK_ENABLED=True
-TAIGA_FEEDBACK_EMAIL=support@taiga.io
+FEEDBACK_ENABLED=True
+FEEDBACK_EMAIL=support@taiga.io
 ```
 
     TAIGA_FEEDBACK_ENABLED=True
     TAIGA_FEEDBACK_EMAIL=taiga@company.com
 
 ```yml
-TAIGA_FEEDBACK_ENABLED=True
-TAIGA_FEEDBACK_EMAIL=contact@company.com
+FEEDBACK_ENABLED=True
+FEEDBACK_EMAIL=contact@company.com
 ```
 
 ### TAIGA_STATS_ENABLED
@@ -314,8 +319,24 @@ Enable Taiga statistics.
 Examples:
 
 ```yml
-TAIGA_STATS_ENABLED=False
-TAIGA_STATS_ENABLED=True
+STATS_ENABLED=False
+STATS_ENABLED=True
+```
+
+### ENABLE_TELEMETRY
+
+_Default value_: `False`
+
+Enable Telemetry anonymous data in order to learn about the use of Taiga and improve the platform based on real scenarios.
+
+Examples:
+
+```yml
+ENABLE_TELEMETRY=False
+```
+
+```yml
+ENABLE_TELEMETRY=True
 ```
 
 ### TAIGA_IMPORTER_GITHUB_ENABLED
@@ -327,13 +348,13 @@ Enable Taiga [GitHub](https://github.com) importer. Remember to enable it in the
 Examples:
 
 ```yml
-TAIGA_IMPORTER_GITHUB_ENABLED=False
+ENABLE_GITHUB_IMPORTER=False
 ```
 
 ```yml
-TAIGA_IMPORTER_GITHUB_ENABLED=True
-TAIGA_IMPORTER_GITHUB_CLIENT_ID=XXXXXX_get_a_valid_client_id_from_github_XXXXXX
-TAIGA_IMPORTER_GITHUB_CLIENT_SECRET=XXXXXX_get_a_valid_client_secret_from_github_XXXXXX
+ENABLE_GITHUB_IMPORTER=True
+GITHUB_IMPORTER_CLIENT_ID=XXXXXX_get_a_valid_client_id_from_github_XXXXXX
+GITHUB_IMPORTER_CLIENT_SECRET=XXXXXX_get_a_valid_client_secret_from_github_XXXXXX
 ```
 
 ### TAIGA_IMPORTER_TRELLO_ENABLED
@@ -345,13 +366,13 @@ Enable Taiga [Trello](https://trello.com/) importer. Remember to enable it in th
 Examples:
 
 ```yml
-TAIGA_IMPORTER_TRELLO_ENABLED=False
+ENABLE_TRELLO_IMPORTER=False
 ```
 
 ```yml
-TAIGA_IMPORTER_TRELLO_ENABLED=True
-TAIGA_IMPORTER_TRELLO_API_KEY=XXXXXX_get_a_valid_api_key_from_trello_XXXXXX
-TAIGA_IMPORTER_TRELLO_API_SECRET=XXXXXX_get_a_valid_secret_key_from_trello_XXXXXX
+ENABLE_TRELLO_IMPORTER=True
+TRELLO_IMPORTER_API_KEY=XXXXXX_get_a_valid_api_key_from_trello_XXXXXX
+TRELLO_IMPORTER_SECRET_KEY=XXXXXX_get_a_valid_secret_key_from_trello_XXXXXX
 ```
 
 ### TAIGA_IMPORTER_JIRA_ENABLED
@@ -363,14 +384,14 @@ Enable Taiga [JIRA](https://www.atlassian.com/software/jira) importer. Remember 
 Examples:
 
 ```yml
-TAIGA_IMPORTER_JIRA_ENABLED=False
+ENABLE_JIRA_IMPORTER=False
 ```
 
 ```yml
-TAIGA_IMPORTER_JIRA_ENABLED=True
-TAIGA_IMPORTER_JIRA_CONSUMER_KEY=XXXXXX_get_a_valid_consumer_key_from_jira_XXXXXX
-TAIGA_IMPORTER_JIRA_CERT=XXXXXX_get_a_valid_cert_from_jira_XXXXXX
-TAIGA_IMPORTER_JIRA_PUB_CERT=XXXXXX_get_a_valid_pub_cert_from_jira_XXXXXX
+ENABLE_JIRA_IMPORTER=True
+JIRA_IMPORTER_CONSUMER_KEY=XXXXXX_get_a_valid_consumer_key_from_jira_XXXXXX
+JIRA_IMPORTER_CERT=XXXXXX_get_a_valid_cert_from_jira_XXXXXX
+JIRA_IMPORTER_PUB_CERT=XXXXXX_get_a_valid_pub_cert_from_jira_XXXXXX
 ```
 
 ### TAIGA_IMPORTER_ASANA_ENABLED
@@ -382,13 +403,13 @@ Enable Taiga [Asana](https://asana.com) importer. Remember to enable it in the f
 Examples:
 
 ```yml
-TAIGA_IMPORTER_ASANA_ENABLED=False
+ENABLE_ASANA_IMPORTER=False
 ```
 
 ```yml
-TAIGA_IMPORTER_ASANA_ENABLED=True
-TAIGA_IMPORTER_ASANA_APP_ID=XXXXXX_get_a_valid_app_id_from_asana_XXXXXX
-TAIGA_IMPORTER_ASANA_APP_SECRET=XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX
+ENABLE_ASANA_IMPORTER=True
+ASANA_IMPORTER_APP_ID=XXXXXX_get_a_valid_app_id_from_asana_XXXXXX
+ASANA_IMPORTER_APP_SECRET=XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX
 ```
 
 ### TAIGA_EVENTS_ENABLED
@@ -400,25 +421,25 @@ Enable [Taiga Events](https://github.com/Monogramm/docker-taiga-events). Require
 Examples:
 
 ```yml
-TAIGA_EVENTS_ENABLED=False
+EVENTS_ENABLED=False
 ```
 
 ```yml
-TAIGA_EVENTS_ENABLED=True
-RABBIT_VHOST=/
-RABBIT_USER=guest
-RABBIT_PASSWORD=guest
-RABBIT_HOST=rabbitmq
-RABBIT_PORT=5672
+EVENTS_ENABLED=True
+RABBITMQ_VHOST=/
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
 ```
 
 ```yml
-TAIGA_EVENTS_ENABLED=True
-RABBIT_VHOST=/
-RABBIT_USER=taiga
-RABBIT_PASSWORD=somethingverysecure
-RABBIT_HOST=taiga_rabbitmq
-RABBIT_PORT=5672
+EVENTS_ENABLED=True
+RABBITMQ_VHOST=/
+RABBITMQ_USER=taiga
+RABBITMQ_PASSWORD=somethingverysecure
+RABBITMQ_HOST=taiga_rabbitmq
+RABBITMQ_PORT=5672
 ```
 
 ### TAIGA_ASYNC_ENABLED
@@ -430,45 +451,29 @@ Enable Taiga asynchronous mode. Requires Redis, Celery and RabbitMQ.
 Examples:
 
 ```yml
-TAIGA_ASYNC_ENABLED=False
+CELERY_ENABLED=False
 ```
 
 ```yml
-TAIGA_ASYNC_ENABLED=True
-RABBIT_VHOST=/
-RABBIT_USER=guest
-RABBIT_PASSWORD=guest
-RABBIT_HOST=rabbitmq
-RABBIT_PORT=5672
+CELERY_ENABLED=True
+RABBITMQ_VHOST=/
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
 REDIS_HOST=redis
 REDIS_PORT=6379
 ```
 
 ```yml
-TAIGA_ASYNC_ENABLED=True
-RABBIT_VHOST=/
-RABBIT_USER=taiga
-RABBIT_PASSWORD=somethingverysecure
-RABBIT_HOST=taiga_rabbitmq
-RABBIT_PORT=5672
+CELERY_ENABLED=True
+RABBITMQ_VHOST=/
+RABBITMQ_USER=taiga
+RABBITMQ_PASSWORD=somethingverysecure
+RABBITMQ_HOST=taiga_rabbitmq
+RABBITMQ_PORT=5672
 REDIS_HOST=taiga_redis
 REDIS_PORT=6379
-```
-
-### TAIGA_TELEMETRY_ENABLED
-
-_Default value_: `False`
-
-Enable Telemetry anonymous data in order to learn about the use of Taiga and improve the platform based on real scenarios.
-
-Examples:
-
-```yml
-TAIGA_TELEMETRY_ENABLED=False
-```
-
-```yml
-TAIGA_TELEMETRY_ENABLED=True
 ```
 
 

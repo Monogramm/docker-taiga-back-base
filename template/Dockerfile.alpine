@@ -66,8 +66,10 @@ RUN set -ex; \
     cp -r /tmp/taiga-back/taiga-back-${TAIGA_VERSION}/* "${SOURCE_DIR}"; \
     rm -rf /tmp/taiga-back; \
     ln -s /taiga/local.py "${SOURCE_DIR}/settings/local.py"; \
+    ln -s /taiga/local.py "${SOURCE_DIR}/settings/config.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
-    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"
+    pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"; \
+    [ ! -f "${SOURCE_DIR}/requirements-contribs.txt" ] || pip install --no-cache-dir -r "${SOURCE_DIR}/requirements-contribs.txt"
 
 ## Runtime environment variables
 # Taiga database, front, back, events, email and security properties
@@ -114,7 +116,7 @@ ENV BIND_ADDRESS=0.0.0.0 \
     ASANA_IMPORTER_APP_ID= \
     ASANA_IMPORTER_APP_SECRET= \
     EVENTS_ENABLED=False \
-    RABBITMQ_VHOST=/taiga \
+    RABBITMQ_VHOST=/ \
     RABBITMQ_USER=guest \
     RABBITMQ_PASS=guest \
     RABBITMQ_HOST=rabbitmq \
@@ -123,12 +125,14 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
-# TODO Setup Taiga user
-# RUN set -ex; \
-#     addgroup --gid 999 -S taiga; \
-#     adduser --uid 999 -S -D -G taiga taiga; \
-#     chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
-# 
+%%EXTRA_ENV%%
+
+# Setup Taiga user
+RUN set -ex; \
+    addgroup --gid 5001 -S taiga; \
+    adduser --uid 5001 -S -D -G taiga taiga; \
+    chown -R taiga:taiga "${SOURCE_DIR}/"* "${WORK_DIR}/"*
+
 # USER taiga
 
 VOLUME /taiga ${WORK_DIR}

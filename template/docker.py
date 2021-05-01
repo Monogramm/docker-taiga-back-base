@@ -1,6 +1,7 @@
 # Importing common provides default settings, see:
 # https://github.com/taigaio/taiga-back/blob/master/settings/common.py
 from .common import *
+import os, sys
 
 #########################################
 ## GENERIC
@@ -221,21 +222,54 @@ if os.getenv('TAIGA_IMPORTER_ASANA_ENABLED', os.getenv('ENABLE_ASANA_IMPORTER', 
 
 if os.getenv('TAIGA_EVENTS_ENABLED', os.getenv('EVENTS_ENABLED', 'False')).lower() == 'true':
     print("Taiga events enabled", file=sys.stderr)
-    BROKER_URL  = 'amqp://' + os.getenv('RABBIT_USER', os.getenv('RABBITMQ_USER', 'guest')) + ':' + os.getenv('RABBIT_PASSWORD', os.getenv('RABBITMQ_PASS', 'guest')) + '@' + os.getenv('RABBIT_HOST', os.getenv('RABBITMQ_HOST')) + ':' + os.getenv('RABBIT_PORT', os.getenv('RABBITMQ_PORT', '5672'))
+    broker_url = 'amqp://' + os.getenv('RABBIT_USER', os.getenv('RABBITMQ_USER', 'guest')) + ':' + os.getenv('RABBIT_PASSWORD', os.getenv('RABBITMQ_PASS', 'guest')) + '@' + os.getenv('RABBIT_HOST', os.getenv('RABBITMQ_HOST', 'localhost')) + ':' + os.getenv('RABBIT_PORT', os.getenv('RABBITMQ_PORT', '5672')) + os.getenv('RABBIT_VHOST', os.getenv('RABBITMQ_VHOST', '/'))
 
-    EVENTS_PUSH_BACKEND_URL = BROKER_URL + os.getenv('RABBIT_VHOST', os.getenv('RABBITMQ_VHOST', '/'))
+    EVENTS_PUSH_BACKEND_URL = broker_url
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
     EVENTS_PUSH_BACKEND_OPTIONS = {"url": EVENTS_PUSH_BACKEND_URL}
 
 if os.getenv('TAIGA_ASYNC_ENABLED', os.getenv('CELERY_ENABLED', 'False')).lower() == 'true':
-    from .celery import *
-
     print("Taiga async mode enabled", file=sys.stderr)
-    BROKER_URL  = 'amqp://' + os.getenv('RABBIT_USER', os.getenv('RABBITMQ_USER', 'guest')) + ':' + os.getenv('RABBIT_PASSWORD', os.getenv('RABBITMQ_PASS', 'guest')) + '@' + os.getenv('RABBIT_HOST', os.getenv('RABBITMQ_HOST')) + ':' + os.getenv('RABBIT_PORT', os.getenv('RABBITMQ_PORT', '5672'))
+
+    # Not present in Taiga 6+
+    #from .celery import *
+
+    broker_url = 'amqp://' + os.getenv('RABBIT_USER', os.getenv('RABBITMQ_USER', 'guest')) + ':' + os.getenv('RABBIT_PASSWORD', os.getenv('RABBITMQ_PASS', 'guest')) + '@' + os.getenv('RABBIT_HOST', os.getenv('RABBITMQ_HOST', 'localhost')) + ':' + os.getenv('RABBIT_PORT', os.getenv('RABBITMQ_PORT', '5672')) + os.getenv('RABBIT_VHOST', os.getenv('RABBITMQ_VHOST', '/'))
+    result_backend = 'redis://' + os.getenv('REDIS_HOST', 'localhost') + ':' + os.getenv('REDIS_PORT', '6379') + '/0'
+
+    timezone = os.getenv('TAIGA_TIMEZONE', 'Europe/Madrid')
 
     # Set to True to enable celery and work in async mode or False
     # to disable it and work in sync mode. You can find the celery
-    # settings in settings/celery.py and settings/celery-local.py
+    # settings in settings/celery_local.py
     CELERY_ENABLED = True
-    CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_HOST') + ':' + os.getenv('REDIS_PORT', '6379') + '/0'
-    CELERY_BROKER_URL = BROKER_URL + os.getenv('RABBIT_VHOST', os.getenv('RABBITMQ_VHOST', '/'))
+    CELERY_BROKER_URL = broker_url
+    CELERY_RESULT_BACKEND = result_backend
+
+    # Only for Taiga 6+
+    from kombu import Queue
+
+    accept_content = ['pickle',] # Values are 'pickle', 'json', 'msgpack' and 'yaml'
+    task_serializer = "pickle"
+    result_serializer = "pickle"
+    task_default_queue = 'tasks'
+    task_queues = (
+        Queue('tasks', routing_key='task.#'),
+        Queue('transient', routing_key='transient.#', delivery_mode=1)
+    )
+    task_default_exchange = 'tasks'
+    task_default_exchange_type = 'topic'
+    task_default_routing_key = 'task.default'
+
+    CELERY_ACCEPT_CONTENT = accept_content
+    CELERY_TASK_SERIALIZER = task_serializer
+    CELERY_RESULT_SERIALIZER = result_serializer
+    CELERY_TIMEZONE = timezone
+    CELERY_TASK_DEFAULT_QUEUE = task_default_queue
+    CELERY_QUEUES = (
+        Queue('tasks', routing_key='task.#'),
+        Queue('transient', routing_key='transient.#', delivery_mode=1)
+    )
+    CELERY_TASK_DEFAULT_EXCHANGE = task_default_exchange
+    CELERY_TASK_DEFAULT_EXCHANGE_TYPE = task_default_exchange_type
+    CELERY_TASK_DEFAULT_ROUTING_KEY = task_default_routing_key
