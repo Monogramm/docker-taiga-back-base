@@ -29,8 +29,8 @@ variants=(
     alpine
 )
 
-min_version='4.2'
-dockerLatest='6.0'
+min_version='6.0'
+dockerLatest='6.5'
 dockerDefaultVariant='alpine'
 
 
@@ -40,7 +40,7 @@ function version_greater_or_equal() {
 }
 
 dockerRepo="monogramm/docker-taiga-back-base"
-latests=( $( curl -fsSL 'https://api.github.com/repos/taigaio/taiga-back/tags' |tac|tac| \
+latests=( $( curl -fsSL 'https://api.github.com/repos/kaleidos-ventures/taiga-back/tags' |tac|tac| \
     grep -oE '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' | \
     sort -urV )
     4.2.14 )

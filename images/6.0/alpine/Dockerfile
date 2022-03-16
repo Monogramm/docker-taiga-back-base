@@ -21,7 +21,7 @@ COPY conf/taiga/local.py /taiga/
 ARG TAIGA_VERSION=6.0.9
 
 # Get Taiga
-ADD https://github.com/taigaio/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
+ADD https://github.com/kaleidos-ventures/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
 
 # Install the packages we need
 # Set locale
@@ -56,6 +56,9 @@ RUN set -ex; \
         tar \
         zeromq-dev \
         zlib-dev \
+        lapack-dev \
+        openblas-dev \
+        libgfortran \
     ; \
     rm -rf /var/cache/apk/*; \
     chmod 755 /entrypoint.sh /checkdb.py /changeadminpasswd.py; \
@@ -68,6 +71,7 @@ RUN set -ex; \
     ln -s /taiga/local.py "${SOURCE_DIR}/settings/local.py"; \
     ln -s /taiga/local.py "${SOURCE_DIR}/settings/config.py"; \
     sed -i -e 's|cryptography==1.9|cryptography==2.3.1|g' "${SOURCE_DIR}/requirements.txt"; \
+    pip install --no-cache-dir --upgrade pip; \
     pip install --no-cache-dir -r "${SOURCE_DIR}/requirements.txt"; \
     [ ! -f "${SOURCE_DIR}/requirements-contribs.txt" ] || pip install --no-cache-dir -r "${SOURCE_DIR}/requirements-contribs.txt"
 

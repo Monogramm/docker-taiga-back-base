@@ -1,4 +1,4 @@
-FROM python:%%PYTHON_VERSION%%-%%VARIANT%%
+FROM python:3.7-alpine
 
 ## Build time environment variables
 # specify LANG to ensure python installs locals properly
@@ -18,7 +18,7 @@ COPY conf/locale.gen /etc/
 COPY conf/taiga/local.py /taiga/
 
 # Build version
-ARG TAIGA_VERSION=%%VERSION%%
+ARG TAIGA_VERSION=6.1.1
 
 # Get Taiga
 ADD https://github.com/kaleidos-ventures/taiga-back/archive/${TAIGA_VERSION}.tar.gz /tmp/taiga-back-${TAIGA_VERSION}.tar.gz
@@ -129,7 +129,7 @@ ENV BIND_ADDRESS=0.0.0.0 \
     REDIS_HOST=redis \
     REDIS_PORT=6379
 
-%%EXTRA_ENV%%
+ENV DJANGO_SETTINGS_MODULE=settings.config
 
 # Setup Taiga user
 RUN set -ex; \
